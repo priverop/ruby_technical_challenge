@@ -1,0 +1,16 @@
+plugins: rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.4
+  Exclude:
+    - "bin/**/*"
+    - "spec/spec_helper.rb"
+
+# Methods returning hashes shouldn't be taken care of
+Metrics/MethodLength:
+  CountAsOne: "hash"
+
+RSpec/ExampleLength:
+  CountAsOne: "hash"
+

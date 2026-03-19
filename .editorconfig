@@ -1,0 +1,9 @@
+# Top-level config file
+root = true
+
+# All files
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = unset
+insert_final_newline = true
