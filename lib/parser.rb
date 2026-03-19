@@ -10,19 +10,53 @@ class Parser
     reservations.split("\n").each do |line|
       next if line == 'RESERVATION'
 
-      segments.push(segment(line))
+      parsed_segment = segment(line)
+      segments.push(parsed_segment) if parsed_segment
     end
     segments
   end
 
   def self.segment(line)
-    words = line.split
-    # los dos puntos van fuera
-    # opcionales:
-    #   date_from
-    #   to
-    #   date_to
-    #   time_to
-    Segment.new(words[1], words[2], words[3])
+    pattern = /^SEGMENT:\s+(\w+)/
+    matcher = line.match(pattern)
+
+    return unless matcher # TODO: tiene sentido?
+
+    type = matcher.captures
+
+    if type.include?('Hotel') # TODO: More robust?
+      hotel_segment(line)
+    else
+      trip_segment(line)
+    end
+
+    # words = line.split
+    # # los dos puntos van fuera
+    # # opcionales:
+    # #   date_from
+    # #   to
+    # #   date_to
+    # #   time_to
+    # Segment.new(words[1], words[2], words[3])
+  end
+
+  def self.trip_segment(trip_line)
+    pattern = /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+->\s+(\w+)\s+(\d{2}:\d{2})$/
+    matcher = trip_line.match(pattern)
+
+    return unless matcher
+
+    type, from, date_from, time_from, to, time_to = matcher.captures
+    Segment.new(type, from, to, date_from, nil, time_from, time_to)
+  end
+
+  def self.hotel_segment(hotel_line)
+    pattern = /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+->\s+(\d{4}-\d{2}-\d{2})$/
+    matcher = hotel_line.match(pattern)
+
+    return unless matcher
+
+    type, from, date_from, date_to = matcher.captures
+    Segment.new(type, from, nil, date_from, date_to, nil, nil)
   end
 end
