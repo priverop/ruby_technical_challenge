@@ -9,12 +9,19 @@ require 'debug'
 require_relative 'lib/travel_manager'
 
 if ARGV.length != 1
-  puts 'Wrong number of arguments. Usage: main.rb input.txt'
+  puts 'Wrong number of arguments. Usage: BASED=SVQ main.rb input.txt'
+  exit 0
+end
+
+based = ENV.fetch('BASED', nil)
+
+if based.nil?
+  puts 'Please specify where you are based using the BASED env variable. Usage: BASED=SVQ main.rb input.txt'
   exit 0
 end
 
 input_reservations = ARGV[0]
 
-result = TravelManager.itinerary(input_reservations)
-
+puts based
+result = TravelManager.itinerary(input_reservations, based)
 pp result
