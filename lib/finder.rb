@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'trip'
+
 # Links segments to each other to make itineraries
 class Finder
   def self.find(segments, based)
@@ -8,7 +10,9 @@ class Finder
                              .sort_by(&:date_from)
 
     based_segments.map do |based_start|
-      linked_segments(based_start, segments)
+      sorted_segments = sorted_segments(based_start, segments)
+      destiny = find_trip_destiny(sorted_segments, based)
+      Trip.new(destiny, sorted_segments)
     end
   end
 
@@ -32,7 +36,7 @@ class Finder
   end
 
   # Gets all the linked segments starting from the "previous" segment (which is the based_segment)
-  def self.linked_segments(previous, segments)
+  def self.sorted_segments(previous, segments)
     sorted = []
     loop do
       sorted.push(previous)

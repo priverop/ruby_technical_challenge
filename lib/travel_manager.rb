@@ -14,9 +14,9 @@ module TravelManager
     input_reservations = Client.read(input_file)
     segments = Parser.parse(input_reservations)
 
-    linked_segments = Finder.find(segments, based)
+    trips = Finder.find(segments, based)
 
-    sorted_trips = Itinerary.generate(linked_segments)
+    sorted_trips = Itinerary.generate(trips)
 
     itinerary = ""
 

@@ -2,22 +2,18 @@
 
 # Array to Text
 class Itinerary
-  def self.generate(linked_segments)
-    # TODO: Necesitamos encontrar el TRIP TO a dónde va.
-    # Dónde lo buscamos? finder?
-    # Igual sacar un hash TRIP -> []
-    # sacar todos los TO, y el último antes de volver a based?
-
-    linked_segments.map do |trip|
+  def self.generate(trips)
+    trips.map do |trip|
       trip_to_text(trip)
     end
   end
 
-  # Trip is the array of segments of the same "travel block"
   def self.trip_to_text(trip)
-    trip.map do |segment|
+    segments_text = trip.sorted_segments.map do |segment|
       segment_to_text(segment)
     end
+
+    segments_text.unshift("TRIP to #{trip.destiny}")
   end
 
   def self.segment_to_text(segment)

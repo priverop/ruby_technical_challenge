@@ -29,15 +29,6 @@ class Parser
     else
       trip_segment(line)
     end
-
-    # words = line.split
-    # # los dos puntos van fuera
-    # # opcionales:
-    # #   date_from
-    # #   to
-    # #   date_to
-    # #   time_to
-    # Segment.new(words[1], words[2], words[3])
   end
 
   def self.trip_segment(trip_line)
