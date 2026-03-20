@@ -13,8 +13,9 @@ module TravelManager
   def self.itinerary(input_file, based)
     input_reservations = Client.read(input_file)
     segments = Parser.parse(input_reservations)
-
     trips = Finder.find(segments, based)
+
+    return "ERROR!" if trips.nil?
 
     sorted_trips = Itinerary.generate(trips)
 

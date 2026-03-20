@@ -9,6 +9,8 @@ class Finder
     based_segments = segments.select { |segment| segment.from == based }
                              .sort_by(&:date_from)
 
+    return if based_segments.empty?
+
     based_segments.map do |based_start|
       sorted_segments = sorted_segments(based_start, segments)
       destiny = find_trip_destiny(sorted_segments, based)
