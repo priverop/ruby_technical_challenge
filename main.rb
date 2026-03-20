@@ -22,6 +22,6 @@ end
 
 input_reservations = ARGV[0]
 
-puts based
+puts "Itinerary for user based in #{based}:\n\n"
 result = TravelManager.itinerary(input_reservations, based)
-pp result
+puts result
