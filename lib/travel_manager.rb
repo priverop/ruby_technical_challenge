@@ -15,11 +15,15 @@ module TravelManager
     segments = Parser.parse(input_reservations)
     trips = Finder.find(segments, based)
 
-    return "ERROR!" if trips.nil?
+    return 'ERROR!' if trips.nil?
 
     sorted_trips = Itinerary.generate(trips)
 
-    itinerary = ""
+    print_itinerary(sorted_trips)
+  end
+
+  def self.print_itinerary(sorted_trips)
+    itinerary = ''
 
     sorted_trips.each do |trip|
       itinerary += trip.join("\n")
