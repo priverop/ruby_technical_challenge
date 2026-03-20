@@ -3,6 +3,7 @@
 require_relative 'client'
 require_relative 'parser'
 require_relative 'finder'
+require_relative 'itinerary'
 
 ## Main module entry-point - Main controller
 # This library transforms the reservations into itineraries
@@ -13,6 +14,17 @@ module TravelManager
     input_reservations = Client.read(input_file)
     segments = Parser.parse(input_reservations)
 
-    Finder.find(segments, based)
+    linked_segments = Finder.find(segments, based)
+
+    sorted_trips = Itinerary.generate(linked_segments)
+
+    itinerary = ""
+
+    sorted_trips.each do |trip|
+      itinerary += trip.join("\n")
+      itinerary += "\n\n"
+    end
+
+    itinerary
   end
 end
