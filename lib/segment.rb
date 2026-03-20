@@ -5,7 +5,7 @@
 class Segment
   attr_accessor :type, :from, :to, :date_from, :date_to, :time_from, :time_to
 
-  def initialize(type, from, to, date_from, date_to, time_from, time_to)
+  def initialize(type, from, to, date_from, date_to, time_from, time_to) # rubocop:disable Metrics/ParameterLists
     self.type = type
     self.from = from
     self.to = to
