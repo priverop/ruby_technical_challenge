@@ -12,6 +12,25 @@ class Finder
     end
   end
 
+  # Gets the destiny of the trip looking at the hotel or the last place before going home
+  # Check the documentation for more info about this method
+  # TODO: Encapsulate
+  def self.find_trip_destiny(sorted_segments, based)
+    last_hotel = sorted_segments.select { |segment| segment.type == 'Hotel' }
+                                .max_by(&:date_from)
+
+    return last_hotel.to unless last_hotel.nil?
+
+    # If there is no hotel, let's find the last segment before going home
+    last_segment_before_home = sorted_segments.select { |segment| segment.to == based }.last
+
+    return last_segment_before_home.from unless last_segment_before_home.nil?
+
+    # If there is no trip back home, let's return the last visited place
+
+    sorted_segments.last.to
+  end
+
   # Gets all the linked segments starting from the "previous" segment (which is the based_segment)
   def self.linked_segments(previous, segments)
     sorted = []
