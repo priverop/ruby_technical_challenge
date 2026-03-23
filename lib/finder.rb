@@ -14,28 +14,16 @@ class Finder
 
     based_segments.map do |based_start|
       sorted_segments = sorted_segments(based_start, segments)
-      destiny = find_trip_destiny(sorted_segments, based)
+      destiny = find_trip_destiny(sorted_segments)
       Trip.new(destiny, sorted_segments)
     end
   end
 
   # Gets the destiny of the trip looking at the hotel or the last place before going home
   # Check the documentation for more info about this method
-  # TODO: Encapsulate
-  def self.find_trip_destiny(sorted_segments, based)
-    last_hotel = sorted_segments.select { |segment| segment.type == 'Hotel' }
-                                .max_by(&:datetime_from)
-
-    return last_hotel.to unless last_hotel.nil?
-
-    # If there is no hotel, let's find the last segment before going home
-    last_segment_before_home = sorted_segments.select { |segment| segment.to == based }.last
-
-    return last_segment_before_home.from unless last_segment_before_home.nil?
-
-    # If there is no trip back home, let's return the last visited place
-
-    sorted_segments.last.to
+  # Returns a String
+  def self.find_trip_destiny(sorted_segments)
+    sorted_segments.find { |segment| !segment.connection? }.to
   end
 
   # Gets all the linked segments starting from the "previous" segment (which is the based_segment)
@@ -59,6 +47,6 @@ class Finder
 
   # Gets the next linked segment of the "previous" segment
   def self.find_link(segments, previous)
-    segments.select { |segment| segment.from == previous.to && TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) }.first
+    segments.find { |segment| segment.from == previous.to && TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) }
   end
 end

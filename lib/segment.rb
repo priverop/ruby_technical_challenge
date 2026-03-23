@@ -19,4 +19,8 @@ class Segment
   def flight?
     type == 'Flight'
   end
+
+  def connection?
+    is_connection
+  end
 end
