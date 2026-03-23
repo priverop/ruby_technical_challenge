@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'segment'
 require_relative 'time_utils'
 require_relative 'trip'
 
@@ -42,9 +43,18 @@ class Finder
   end
 
   # Gets the next linked segment of the "previous" segment
+  # TODO: this returns the first one, what if there are multiple in the same day?
   def self.find_link(segments, previous)
     segments.find do |segment|
-      segment.from == previous.to && TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to)
+      segment.from == previous.to &&
+        (
+          # Hotel times are 00:00, which messes up with the hour difference
+          TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) ||
+          (
+            TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to).positive? &&
+            TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to) < 24
+          )
+        )
     end
   end
 
@@ -53,11 +63,14 @@ class Finder
   #
   # @param previous [Segment] starting flight.
   # @param next_segment [Segment] following flight.
-  # @return [void]
+  # @return [Boolean] true if conditions are met
   def self.check_connection(previous, next_segment)
     if next_segment.flight? && previous.flight? &&
+       next_segment != previous &&
        TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < 24
       previous.is_connection = true
+      return true
     end
+    false
   end
 end
