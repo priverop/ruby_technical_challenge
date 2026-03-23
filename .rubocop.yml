@@ -13,4 +13,9 @@ Metrics/MethodLength:
 
 RSpec/ExampleLength:
   CountAsOne: "hash"
+  Max: 10 # the default is 5, wow
 
+# I don't quite understand the logic of this rule.
+# It's true that sometimes we should be splitting tests, but I see nothing wrong with multiple expectations for the same test.
+RSpec/MultipleExpectations:
+  Enabled: false
