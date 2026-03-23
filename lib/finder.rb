@@ -19,9 +19,10 @@ class Finder
     end
   end
 
-  # Gets the destiny of the trip looking at the hotel or the last place before going home
-  # Check the documentation for more info about this method
-  # Returns a String
+  # Gets the destiny of the trip, ignoring connection flights.
+  #
+  # @param sorted_segments [Array] sorted trip segments.
+  # @return [String] the trip destination.
   def self.find_trip_destiny(sorted_segments)
     sorted_segments.find { |segment| !segment.connection? }.to
   end
@@ -34,12 +35,7 @@ class Finder
       next_segment = find_link(segments, previous)
       break if next_segment.nil? # no more segments in the trip
 
-      # Two flights are a connection if there is less than 24 hours difference
-      if next_segment.flight? &&
-         previous.flight? &&
-         TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < 24
-        previous.is_connection = true
-      end
+      check_connection(previous, next_segment)
       previous = next_segment
     end
     sorted
@@ -48,5 +44,18 @@ class Finder
   # Gets the next linked segment of the "previous" segment
   def self.find_link(segments, previous)
     segments.find { |segment| segment.from == previous.to && TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) }
+  end
+
+  # Sets the previous segment as is_connection, if condition is met.
+  # Two flights are a connection if there is less than 24 hours difference.
+  #
+  # @param previous [Segment] starting flight.
+  # @param next_segment [Segment] following flight.
+  # @return [void]
+  def self.check_connection(previous, next_segment)
+    if next_segment.flight? && previous.flight? &&
+       TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < 24
+      previous.is_connection = true
+    end
   end
 end
