@@ -14,14 +14,14 @@ module TravelManager
     return 'ERROR' if based.length != 3
 
     input_reservations = Client.read(input_file)
-    segments = Parser.parse(input_reservations)
-    trips = Finder.find(segments, based)
+    unsorted_segments = Parser.parse(input_reservations)
+    sorted_trips = Finder.find(unsorted_segments, based)
 
-    return 'ERROR!' if trips.nil?
+    return 'ERROR!' if sorted_trips.nil?
 
-    sorted_trips = Itinerary.generate(trips)
+    sorted_trip_texts = Itinerary.generate(sorted_trips)
 
-    print_itinerary(sorted_trips)
+    print_itinerary(sorted_trip_texts)
   end
 
   def self.print_itinerary(sorted_trips)
