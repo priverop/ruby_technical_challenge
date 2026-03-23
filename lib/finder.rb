@@ -64,7 +64,7 @@ class Finder
   # @param previous [Segment] starting flight.
   # @param next_segment [Segment] following flight.
   # @return [Boolean] true if conditions are met
-  def self.check_connection(previous, next_segment)
+  def self.check_connection(previous, next_segment) # rubocop:disable Naming/PredicateMethod
     if next_segment.flight? && previous.flight? &&
        next_segment != previous &&
        TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < 24

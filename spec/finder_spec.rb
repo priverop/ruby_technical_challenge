@@ -13,7 +13,7 @@ RSpec.describe Finder do
       Segment.new('Train', 'SVQ', 'MAD', '2023-02-15', '2023-02-15', '9:30', '11:00'),
       Segment.new('Train', 'MAD', 'SVQ', '2023-02-17', '2023-02-17', '17:00', '19:30'),
       Segment.new('Hotel', 'MAD', 'MAD', '2023-02-15', '2023-02-17', nil, nil),
-      Segment.new('Train', 'BCN', 'NYC', '2023-03-02', '2023-03-02', '15:00', '22:45')
+      Segment.new('Flight', 'BCN', 'NYC', '2023-03-02', '2023-03-02', '15:00', '22:45')
     ]
   end
 
@@ -40,13 +40,75 @@ RSpec.describe Finder do
     ]
   end
 
-  describe '.sorted_segments' do
-    skip 'TBI'
+  describe '.find' do
+    context 'when passing a valid segment' do
+      it 'returns an array of Trips' do
+        result = described_class.find(unsorted_segments, 'SVQ')
+
+        expect(result.count).to eq(3)
+        expect(result.first.destiny).to eq('BCN')
+        expect(result.first.sorted_segments.count).to eq(3)
+        expect(result.first.sorted_segments.last).to have_attributes(
+          type: 'Flight',
+          from: 'BCN',
+          to: 'SVQ',
+          datetime_from: TimeUtils.datetime_to_time('2023-01-10', '10:30'),
+          datetime_to: TimeUtils.datetime_to_time('2023-01-10', '11:50')
+        )
+        expect(result.at(1).destiny).to eq('MAD')
+        expect(result.at(1).sorted_segments.count).to eq(3)
+        expect(result.at(1).sorted_segments.last).to have_attributes(
+          type: 'Train',
+          from: 'MAD',
+          to: 'SVQ',
+          datetime_from: TimeUtils.datetime_to_time('2023-02-17', '17:00'),
+          datetime_to: TimeUtils.datetime_to_time('2023-02-17', '19:30')
+        )
+        expect(result.last.destiny).to eq('NYC')
+        expect(result.last.sorted_segments.count).to eq(2)
+        expect(result.last.sorted_segments.last).to have_attributes(
+          type: 'Flight',
+          from: 'BCN',
+          to: 'NYC',
+          datetime_from: TimeUtils.datetime_to_time('2023-03-02', '15:00'),
+          datetime_to: TimeUtils.datetime_to_time('2023-03-02', '22:45')
+        )
+      end
+    end
   end
 
-  ###############
-  # UNIT TESTS: #
-  ###############
+  describe '.sorted_segments' do
+    context 'when passing a valid array of segments' do
+      it 'returns the sorted segments' do
+        previous = Segment.new('Train', 'SVQ', 'MAD', '2023-02-15', '2023-02-15', '9:30', '11:00')
+
+        result = described_class.sorted_segments(previous, unsorted_segments)
+
+        expect(result.count).to eq(3)
+        expect(result.last).to have_attributes(
+          type: 'Train',
+          from: 'MAD',
+          to: 'SVQ',
+          datetime_from: TimeUtils.datetime_to_time('2023-02-17', '17:00'),
+          datetime_to: TimeUtils.datetime_to_time('2023-02-17', '19:30')
+        )
+      end
+    end
+
+    context 'when passing a nil segment as previous, and a valid array' do
+      skip 'think, is this worth it?'
+    end
+
+    context 'when passing an empty array, with the previous segment' do
+      it 'returns the previous segment' do
+        previous = Segment.new('Flight', 'SVQ', 'BCN', '2023-01-05', '2023-01-05', '20:40', '22:10')
+
+        result = described_class.sorted_segments(previous, [])
+
+        expect(result).to eq([previous])
+      end
+    end
+  end
 
   describe '.find_links' do
     context 'when the dates are the same' do
