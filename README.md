@@ -16,8 +16,3 @@ Ruby library that transforms user reservations into a easy-to-follow itinerary.
 
 - [Decision Registry](/docs/decisions.md): reasonings and explanation behind architectural and implementation decisions.
 - [Requirements](/docs/requirimients.md): challenge requirements
-
-
-# Questions
-
-- Por qué hay bloques RESERVATION? Sirven para algo?
