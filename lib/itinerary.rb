@@ -21,7 +21,7 @@ class Itinerary
   end
 
   def self.hotel_to_text(segment)
-    "Hotel at #{segment.from} on #{segment.date_from} to #{segment.date_to}"
+    "Hotel at #{segment.from} on #{TimeUtils.date(segment.datetime_from)} to #{TimeUtils.date(segment.datetime_to)}"
   end
 
   def self.flight_to_text(segment)
@@ -33,6 +33,6 @@ class Itinerary
   end
 
   def self.travel_to_text(segment)
-    "from #{segment.from} to #{segment.to} at #{segment.date_from} #{segment.time_from} to #{segment.time_to}"
+    "from #{segment.from} to #{segment.to} at #{TimeUtils.datetime(segment.datetime_from)} to #{TimeUtils.hour(segment.datetime_to)}"
   end
 end

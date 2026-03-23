@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'time_utils'
 require_relative 'trip'
 
 # Links segments to each other to make itineraries
@@ -7,7 +8,7 @@ class Finder
   def self.find(segments, based)
     # Gets all the segments that start in the based location
     based_segments = segments.select { |segment| segment.from == based }
-                             .sort_by(&:date_from)
+                             .sort_by(&:datetime_from)
 
     return if based_segments.empty?
 
@@ -23,7 +24,7 @@ class Finder
   # TODO: Encapsulate
   def self.find_trip_destiny(sorted_segments, based)
     last_hotel = sorted_segments.select { |segment| segment.type == 'Hotel' }
-                                .max_by(&:date_from)
+                                .max_by(&:datetime_from)
 
     return last_hotel.to unless last_hotel.nil?
 
@@ -50,6 +51,6 @@ class Finder
 
   # Gets the next linked segment of the "previous" segment
   def self.find_link(segments, previous)
-    segments.select { |segment| segment.from == previous.to && segment.date_from == previous.date_to }.first
+    segments.select { |segment| segment.from == previous.to && TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) }.first
   end
 end
