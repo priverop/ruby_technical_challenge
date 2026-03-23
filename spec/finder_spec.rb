@@ -4,9 +4,8 @@ require 'spec_helper'
 require 'finder'
 
 RSpec.describe Finder do
-
   describe '.find_links' do
-    context 'when ' do
+    context 'when' do
       skip 'TBI'
     end
   end

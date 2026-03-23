@@ -43,7 +43,9 @@ class Finder
 
   # Gets the next linked segment of the "previous" segment
   def self.find_link(segments, previous)
-    segments.find { |segment| segment.from == previous.to && TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) }
+    segments.find do |segment|
+      segment.from == previous.to && TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to)
+    end
   end
 
   # Sets the previous segment as is_connection, if condition is met.
