@@ -33,4 +33,9 @@ module TimeUtils
   def self.same_dates?(datetime1, datetime2)
     datetime1.strftime('%Y-%m-%d') == datetime2.strftime('%Y-%m-%d')
   end
+
+  def self.hours_difference(next_date, previous_date)
+    seconds_difference = next_date - previous_date
+    seconds_difference / 3600 # seconds per hour
+  end
 end

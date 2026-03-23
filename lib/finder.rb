@@ -43,8 +43,16 @@ class Finder
     sorted = []
     loop do
       sorted.push(previous)
-      previous = find_link(segments, previous)
-      break if previous.nil?
+      next_segment = find_link(segments, previous)
+      break if next_segment.nil? # no more segments in the trip
+
+      # Two flights are a connection if there is less than 24 hours difference
+      if next_segment.flight? &&
+         previous.flight? &&
+         TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < 24
+        previous.is_connection = true
+      end
+      previous = next_segment
     end
     sorted
   end
