@@ -11,6 +11,8 @@ module TravelManager
   class FileNotFoundError < StandardError; end
 
   def self.itinerary(input_file, based)
+    return 'ERROR' if based.length != 3
+
     input_reservations = Client.read(input_file)
     segments = Parser.parse(input_reservations)
     trips = Finder.find(segments, based)
