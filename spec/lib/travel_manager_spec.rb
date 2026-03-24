@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'travel_manager'
 
 RSpec.describe TravelManager do
-  let(:fixtures_path) { File.join(File.expand_path(__dir__), 'fixtures') }
+  let(:fixtures_path) { File.join(File.expand_path('../', __dir__), 'fixtures') }
   let(:input_file) { File.join(fixtures_path, 'valid_input.txt') }
   let(:output_file) { File.read(File.join(fixtures_path, 'valid_output.txt')) }
 
