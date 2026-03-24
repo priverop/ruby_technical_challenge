@@ -9,9 +9,10 @@ require_relative 'itinerary'
 # This library transforms the reservations into itineraries
 module TravelManager
   class FileNotFoundError < StandardError; end
+  class ArgumentError < StandardError; end
 
   def self.itinerary(input_file, based)
-    return 'ERROR' if based.length != 3
+    validate_based!(based)
 
     input_reservations = Client.read(input_file)
     unsorted_segments = Parser.parse(input_reservations)
@@ -33,5 +34,9 @@ module TravelManager
     end
 
     itinerary
+  end
+
+  def self.validate_based!(based)
+    raise TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string" if based.length != 3 || based != based.upcase || !based.is_a?(String)
   end
 end

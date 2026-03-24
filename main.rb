@@ -15,7 +15,7 @@ end
 
 based = ENV.fetch('BASED', nil)
 
-if based.nil?
+if based.nil? || based.to_s.empty?
   puts 'Please specify where you are based using the BASED env variable. Usage: BASED=SVQ main.rb input.txt'
   exit 0
 end
