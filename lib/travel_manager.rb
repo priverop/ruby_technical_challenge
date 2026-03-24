@@ -37,6 +37,8 @@ module TravelManager
   end
 
   def self.validate_based!(based)
-    raise TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string" if based.length != 3 || based != based.upcase || !based.is_a?(String)
+    return unless based.length != 3 || based != based.upcase || !based.is_a?(String)
+
+    raise TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string"
   end
 end

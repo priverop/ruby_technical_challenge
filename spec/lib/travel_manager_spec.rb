@@ -28,5 +28,35 @@ RSpec.describe TravelManager do
         expect(result).to eq('ERROR!')
       end
     end
+
+    context 'with empty based' do
+      it 'returns exception' do
+        based = ''
+
+        expect do
+          described_class.itinerary(input_file, based)
+        end.to raise_error(TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string")
+      end
+    end
+
+    context 'with two letter based' do
+      it 'returns exception' do
+        based = 'MA'
+
+        expect do
+          described_class.itinerary(input_file, based)
+        end.to raise_error(TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string")
+      end
+    end
+
+    context 'with downcase based' do
+      it 'returns exception' do
+        based = 'Bcn'
+
+        expect do
+          described_class.itinerary(input_file, based)
+        end.to raise_error(TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string")
+      end
+    end
   end
 end

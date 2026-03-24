@@ -11,7 +11,7 @@ class Finder
     based_segments = segments.select { |segment| segment.from == based }
                              .sort_by(&:datetime_from)
 
-    return if based_segments.empty?
+    return if based_segments.empty? # TODO: do we need to return the specific error?
 
     based_segments.map do |based_start|
       sorted_segments = sorted_segments(based_start, segments)
