@@ -17,7 +17,13 @@ class Itinerary
   end
 
   def self.segment_to_text(segment)
-    send "#{segment.type.downcase}_to_text", segment
+    return if segment.nil?
+
+    method_name = "#{segment.type.downcase}_to_text"
+
+    raise SegmentTypeNotCompatibleError, "Unknown segment type: #{segment.type}" unless respond_to?(method_name)
+
+    send(method_name, segment)
   end
 
   def self.hotel_to_text(segment)
