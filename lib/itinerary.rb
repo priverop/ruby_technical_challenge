@@ -32,7 +32,7 @@ class Itinerary
 
   # Formats a single Segment into text.
   #
-  # @raise [SegmentTypeNotCompatibleError] if the segment type has not a method to_text implemented.
+  # @raise [TravelManager::SegmentTypeNotCompatibleError] if the segment type has not a method to_text implemented.
   # @param segment [Segment] the segment to format.
   # @return [String, nil] formatted text, or nil if the segment is nil.
   def self.segment_to_text(segment)
@@ -40,7 +40,7 @@ class Itinerary
 
     method_name = "#{segment.type.downcase}_to_text"
 
-    raise SegmentTypeNotCompatibleError, "Unknown segment type: #{segment.type}" unless respond_to?(method_name)
+    raise TravelManager::SegmentTypeNotCompatibleError, "Unknown segment type: #{segment.type}" unless respond_to?(method_name)
 
     send(method_name, segment)
   end
