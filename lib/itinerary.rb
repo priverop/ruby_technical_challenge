@@ -21,7 +21,7 @@ class Itinerary
   # @return [Array, nil] string for every segment, plus the header TRIP TO,
   # or nil if the trip is nil or empty.
   def self.trip_to_text(trip)
-    return if trip.nil? || trip.empty?
+    return if trip.nil? || trip.sorted_segments.empty?
 
     segments_text = trip.sorted_segments.map do |segment|
       segment_to_text(segment)
