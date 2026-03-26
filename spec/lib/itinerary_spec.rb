@@ -11,9 +11,9 @@ RSpec.describe Itinerary do
   let(:train_generic_travel_text) { 'from MAD to SVQ at 2023-02-17 17:00 to 19:30' }
   let(:flight_generic_travel_text) { 'from SVQ to BCN at 2023-03-02 06:40 to 09:10' }
 
-  let(:flight_travel_text){ 'Flight from SVQ to BCN at 2023-03-02 06:40 to 09:10' }
-  let(:train_travel_text){ 'Train from MAD to SVQ at 2023-02-17 17:00 to 19:30' }
-  let(:hotel_text){ 'Hotel at MAD on 2023-02-15 to 2023-02-17' }
+  let(:flight_travel_text) { 'Flight from SVQ to BCN at 2023-03-02 06:40 to 09:10' }
+  let(:train_travel_text) { 'Train from MAD to SVQ at 2023-02-17 17:00 to 19:30' }
+  let(:hotel_text) { 'Hotel at MAD on 2023-02-15 to 2023-02-17' }
 
   describe '.generate' do
     context 'when the trips array is valid' do
@@ -56,6 +56,16 @@ RSpec.describe Itinerary do
 
         result = described_class.segment_to_text(hotel_segment)
         expect(result).to eq(hotel_text)
+      end
+    end
+
+    context 'when the segment has an Unknown type' do
+      it 'raises SegmentTypeNotCompatibleError' do
+        car_segment = Segment.new('Car', 'MAD', 'BCN', '2026-03-02', '2026-03-02', '09:00', '17:00')
+
+        expect do
+          described_class.segment_to_text(car_segment)
+        end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: Car')
       end
     end
   end
