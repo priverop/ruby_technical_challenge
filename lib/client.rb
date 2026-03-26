@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'travel_manager'
+
 ## I/O functionallity
 class Client
   def self.read(filename)
