@@ -10,6 +10,7 @@ require_relative 'itinerary'
 module TravelManager
   class FileNotFoundError < StandardError; end
   class ArgumentError < StandardError; end
+  class SegmentTypeNotCompatibleError < StandardError; end
 
   def self.itinerary(input_file, based)
     validate_based!(based)
