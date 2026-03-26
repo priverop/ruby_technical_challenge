@@ -52,7 +52,7 @@ class Itinerary
   def self.hotel_to_text(segment)
     return if segment.nil?
 
-    "Hotel at #{segment.from} on #{TimeUtils.date(segment.datetime_from)} to #{TimeUtils.date(segment.datetime_to)}"
+    "#{SegmentType::HOTEL} at #{segment.from} on #{TimeUtils.date(segment.datetime_from)} to #{TimeUtils.date(segment.datetime_to)}"
   end
 
   # Formats a Segment into the flight travel text.
@@ -62,7 +62,7 @@ class Itinerary
   def self.flight_to_text(segment)
     return if segment.nil?
 
-    "Flight #{travel_to_text(segment)}"
+    "#{SegmentType::FLIGHT} #{travel_to_text(segment)}"
   end
 
   # Formats a Segment into the train travel text.
@@ -72,7 +72,7 @@ class Itinerary
   def self.train_to_text(segment)
     return if segment.nil?
 
-    "Train #{travel_to_text(segment)}"
+    "#{SegmentType::TRAIN} #{travel_to_text(segment)}"
   end
 
   # Formats a Segment into the generic travel text.

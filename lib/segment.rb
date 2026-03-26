@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require_relative 'time_utils'
+require_relative 'segment_type'
 
 # Trips are composed by segments.
 # A segment can be a train/flight trip, or a hotel reservation.
 class Segment
+  include SegmentType
+
   attr_reader :type, :from, :to, :datetime_from, :datetime_to
   attr_accessor :is_connection
 
@@ -29,7 +32,7 @@ class Segment
   end
 
   def flight?
-    type == 'Flight'
+    type == SegmentType::FLIGHT
   end
 
   def connection?
