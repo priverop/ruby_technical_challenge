@@ -19,7 +19,7 @@ module TravelManager
     unsorted_segments = Parser.parse(input_reservations)
     sorted_trips = Finder.find(unsorted_segments, based)
 
-    return 'ERROR!' if sorted_trips.nil?
+    return 'ERROR!' if sorted_trips.nil? # TODO: better error
 
     sorted_trip_texts = Itinerary.generate(sorted_trips)
 
@@ -38,7 +38,7 @@ module TravelManager
   end
 
   def self.validate_based!(based)
-    return unless based.length != 3 || based != based.upcase || !based.is_a?(String)
+    return unless !based.is_a?(String) || based.length != 3 || based != based.upcase
 
     raise TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string"
   end
