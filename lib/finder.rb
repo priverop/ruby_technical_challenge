@@ -6,6 +6,8 @@ require_relative 'trip'
 
 # Links segments to each other to make itineraries
 class Finder
+  CONNECTION_HOURS_LIMIT = 24
+
   def self.find(segments, based)
     # Gets all the segments that start in the based location
     based_segments = segments.select { |segment| segment.from == based }
@@ -52,7 +54,7 @@ class Finder
           TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) ||
           (
             TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to).positive? &&
-            TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to) < 24
+            TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to) < CONNECTION_HOURS_LIMIT
           )
         )
     end
@@ -67,7 +69,7 @@ class Finder
   def self.check_connection(previous, next_segment) # rubocop:disable Naming/PredicateMethod
     if next_segment.flight? && previous.flight? &&
        next_segment != previous &&
-       TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < 24
+       TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < CONNECTION_HOURS_LIMIT
       previous.is_connection = true
       return true
     end
