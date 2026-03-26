@@ -4,6 +4,12 @@ require_relative 'segment'
 
 # Transforms file text into Ruby objects (Segments)
 class Parser
+  TEXT_PATTERNS = {
+    reservation_pattern: 'RESERVATION',
+    generic_segment_pattern: /^SEGMENT:\s+(\w+)/,
+    trip_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+->\s+(\w+)\s+(\d{2}:\d{2})$/,
+    hotel_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+->\s+(\d{4}-\d{2}-\d{2})$/
+  }
 
   # Creates an array of Segments from the reservations full text of the user
   #
@@ -15,7 +21,7 @@ class Parser
     segments = []
 
     reservations.split("\n").each do |line|
-      next if line == 'RESERVATION'
+      next if line == TEXT_PATTERNS[:reservation_key]
 
       parsed_segment = segment(line)
       segments.push(parsed_segment) if parsed_segment
@@ -23,17 +29,17 @@ class Parser
     segments
   end
 
-  # Creates a Segment from Segment text line (Hotel/Flight/Train)
+  # Creates a Segment from Segment text line (Hotel/Flight/Train).
   #
-  # @param [String] SEGMENT: text line
-  # @return [Segment] of the right type
+  # @param line [String] SEGMENT: text line.
+  # @return [Segment] segment of the right type.
   def self.segment(line)
-    pattern = /^SEGMENT:\s+(\w+)/
+    pattern = TEXT_PATTERNS[:generic_segment_pattern]
     matcher = line.match(pattern)
 
-    return unless matcher # TODO: tiene sentido?
+    return unless matcher
 
-    type = matcher.captures
+    type = matcher.captures # TODO: change to matcher[1] and do a switch
 
     if type.include?('Hotel') # TODO: More robust?
       hotel_segment(line)
@@ -47,7 +53,7 @@ class Parser
   # @param [String] text line of type Flight/Train
   # @return [Segment]
   def self.trip_segment(trip_line)
-    pattern = /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+->\s+(\w+)\s+(\d{2}:\d{2})$/
+    pattern = TEXT_PATTERNS[:trip_segment_pattern]
     matcher = trip_line.match(pattern)
 
     return unless matcher
@@ -61,7 +67,7 @@ class Parser
   # @param [String] text line of type Hotel
   # @return [Segment]
   def self.hotel_segment(hotel_line)
-    pattern = /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+->\s+(\d{4}-\d{2}-\d{2})$/
+    pattern = TEXT_PATTERNS[:hotel_segment_pattern]
     matcher = hotel_line.match(pattern)
 
     return unless matcher
