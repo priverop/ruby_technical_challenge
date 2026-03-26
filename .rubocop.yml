@@ -19,3 +19,7 @@ RSpec/ExampleLength:
 # It's true that sometimes we should be splitting tests, but I see nothing wrong with multiple expectations for the same test.
 RSpec/MultipleExpectations:
   Enabled: false
+
+# Another rule I don't understand.
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
