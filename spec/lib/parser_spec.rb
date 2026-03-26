@@ -8,10 +8,20 @@ RSpec.describe Parser do
   let(:train_line) { 'SEGMENT: Train MAD 2023-02-17 17:00 -> SVQ 19:30' }
   let(:hotel_line) { 'SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10' }
 
+  let(:flight_segment) { Segment.new('Flight', 'SVQ', 'BCN', '2023-03-02', '2023-03-02', '06:40', '09:10') }
+  let(:train_segment) { Segment.new('Train', 'MAD', 'SVQ', '2023-02-17', '2023-02-17', '17:00', '19:30') }
+  let(:hotel_segment) { Segment.new('Hotel', 'BCN', 'BCN', '2023-01-05', '2023-01-10', nil, nil) }
+
   describe '.parse' do
     context 'when the input text file is valid' do
       it 'returns array of valid Segments' do
-        skip 'TBD'
+        input = <<~TEXT
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-03-02 06:40 -> BCN 09:10
+          SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10
+        TEXT
+
+        skip 'TBD. Lo hago en un rato que me da pereza'
       end
     end
 
@@ -58,16 +68,11 @@ RSpec.describe Parser do
 
   describe '.segment' do
     context 'when the text line has flight type' do
-      it 'returns a valid Segment of type Flight' do
+      it 'delegates to trip_segment' do
+        allow(described_class).to receive(:trip_segment).with(flight_line).and_return(flight_segment)
         result = described_class.segment(flight_line)
 
-        expect(result).to have_attributes(
-          type: 'Flight',
-          from: 'SVQ',
-          to: 'BCN',
-          datetime_from: TimeUtils.datetime_to_time('2023-03-02', '06:40'),
-          datetime_to: TimeUtils.datetime_to_time('2023-03-02', '09:10')
-        )
+        expect(result).to eq(flight_segment)
       end
     end
 
@@ -75,13 +80,7 @@ RSpec.describe Parser do
       it 'returns a valid Segment of type Train' do
         result = described_class.segment(train_line)
 
-        expect(result).to have_attributes(
-          type: 'Train',
-          from: 'MAD',
-          to: 'SVQ',
-          datetime_from: TimeUtils.datetime_to_time('2023-02-17', '17:00'),
-          datetime_to: TimeUtils.datetime_to_time('2023-02-17', '19:30')
-        )
+        expect(result).to eq(train_segment)
       end
     end
 
@@ -89,13 +88,7 @@ RSpec.describe Parser do
       it 'returns a valid Segment of type Hotel' do
         result = described_class.segment(hotel_line)
 
-        expect(result).to have_attributes(
-          type: 'Hotel',
-          from: 'BCN',
-          to: 'BCN',
-          datetime_from: TimeUtils.date_to_time('2023-01-05'),
-          datetime_to: TimeUtils.date_to_time('2023-01-10')
-        )
+        expect(result).to eq(hotel_segment)
       end
     end
 
@@ -121,13 +114,7 @@ RSpec.describe Parser do
       it 'returns a valid Segment type Flight' do
         result = described_class.trip_segment(flight_line)
 
-        expect(result).to have_attributes(
-          type: 'Flight',
-          from: 'SVQ',
-          to: 'BCN',
-          datetime_from: TimeUtils.datetime_to_time('2023-03-02', '06:40'),
-          datetime_to: TimeUtils.datetime_to_time('2023-03-02', '09:10')
-        )
+        expect(result).to eq(flight_segment)
       end
     end
 
@@ -135,13 +122,7 @@ RSpec.describe Parser do
       it 'returns a valid Segment type Train' do
         result = described_class.trip_segment(train_line)
 
-        expect(result).to have_attributes(
-          type: 'Train',
-          from: 'MAD',
-          to: 'SVQ',
-          datetime_from: TimeUtils.datetime_to_time('2023-02-17', '17:00'),
-          datetime_to: TimeUtils.datetime_to_time('2023-02-17', '19:30')
-        )
+        expect(result).to eq(train_segment)
       end
     end
 
@@ -159,13 +140,7 @@ RSpec.describe Parser do
       it 'returns a valid Segment of type Hotel' do
         result = described_class.hotel_segment(hotel_line)
 
-        expect(result).to have_attributes(
-          type: 'Hotel',
-          from: 'BCN',
-          to: 'BCN',
-          datetime_from: TimeUtils.date_to_time('2023-01-05'),
-          datetime_to: TimeUtils.date_to_time('2023-01-10')
-        )
+        expect(result).to eq(hotel_segment)
       end
     end
 

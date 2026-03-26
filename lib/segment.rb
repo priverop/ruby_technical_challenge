@@ -16,11 +16,29 @@ class Segment
     self.is_connection = false
   end
 
+  def attributes
+    {
+      type: type,
+      from: from,
+      to: to,
+      datetime_from: datetime_from,
+      datetime_to: datetime_to,
+      is_connection: is_connection
+    }
+  end
+
   def flight?
     type == 'Flight'
   end
 
   def connection?
     is_connection
+  end
+
+  # To compare segments when testing
+  def ==(other)
+    return false unless other.is_a?(Segment)
+
+    attributes == other.attributes
   end
 end
