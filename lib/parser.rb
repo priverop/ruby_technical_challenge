@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'segment'
+require_relative 'time_utils'
 
 # Transforms file text into Ruby objects (Segments)
 class Parser
@@ -74,7 +75,11 @@ class Parser
     return unless matcher
 
     type, from, date_from, time_from, to, time_to = matcher.captures
-    Segment.new(type, from, to, date_from, date_from, time_from, time_to)
+    Segment.new(
+      type: type, from: from, to: to,
+      datetime_from: TimeUtils.to_time(date_from, time_from),
+      datetime_to: TimeUtils.to_time(date_from, time_to)
+    )
   end
 
   # Creates a Segment from a Hotel Segment text line
@@ -88,6 +93,10 @@ class Parser
     return unless matcher
 
     type, from, date_from, date_to = matcher.captures
-    Segment.new(type, from, from, date_from, date_to, nil, nil)
+    Segment.new(
+      type: type, from: from, to: from,
+      datetime_from: TimeUtils.to_time(date_from, nil),
+      datetime_to: TimeUtils.to_time(date_to, nil)
+    )
   end
 end

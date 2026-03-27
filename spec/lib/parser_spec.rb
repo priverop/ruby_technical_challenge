@@ -8,20 +8,33 @@ RSpec.describe Parser do
   let(:train_line) { 'SEGMENT: Train MAD 2023-02-17 17:00 -> SVQ 19:30' }
   let(:hotel_line) { 'SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10' }
 
-  let(:flight_segment) { Segment.new('Flight', 'SVQ', 'BCN', '2023-03-02', '2023-03-02', '06:40', '09:10') }
-  let(:train_segment) { Segment.new('Train', 'MAD', 'SVQ', '2023-02-17', '2023-02-17', '17:00', '19:30') }
-  let(:hotel_segment) { Segment.new('Hotel', 'BCN', 'BCN', '2023-01-05', '2023-01-10', nil, nil) }
+  let(:flight_segment) do
+    Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
+                datetime_to: TimeUtils.to_time('2023-03-02', '09:10'))
+  end
+  let(:train_segment) do
+    Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
+                datetime_from: TimeUtils.to_time('2023-02-17', '17:00'),
+                datetime_to: TimeUtils.to_time('2023-02-17', '19:30'))
+  end
+  let(:hotel_segment) do
+    Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                datetime_from: TimeUtils.to_time('2023-01-05', nil),
+                datetime_to: TimeUtils.to_time('2023-01-10', nil))
+  end
 
   describe '.parse' do
     context 'when the input text file is valid' do
       it 'returns array of valid Segments' do
+        # TODO: mock segment()
         input = <<~TEXT
           RESERVATION
           SEGMENT: Flight SVQ 2023-03-02 06:40 -> BCN 09:10
           SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10
         TEXT
 
-        skip 'TBD. Lo hago en un rato que me da pereza'
+        skip 'TBI'
       end
     end
 
@@ -66,7 +79,7 @@ RSpec.describe Parser do
     end
   end
 
-  describe '.segment' do
+  describe '.segment' do # TODO: redo with the new send
     context 'when the text line has flight type' do
       it 'delegates to trip_segment' do
         allow(described_class).to receive(:trip_segment).with(flight_line).and_return(flight_segment)
@@ -77,7 +90,8 @@ RSpec.describe Parser do
     end
 
     context 'when the text line has train type' do
-      it 'returns a valid Segment of type Train' do
+      it 'delegates to trip_segment' do
+        allow(described_class).to receive(:trip_segment).with(train_line).and_return(train_segment)
         result = described_class.segment(train_line)
 
         expect(result).to eq(train_segment)
@@ -85,7 +99,8 @@ RSpec.describe Parser do
     end
 
     context 'when the text line has hotel type' do
-      it 'returns a valid Segment of type Hotel' do
+      it 'delegates to hotel_segment' do
+        allow(described_class).to receive(:hotel_segment).with(hotel_line).and_return(hotel_segment)
         result = described_class.segment(hotel_line)
 
         expect(result).to eq(hotel_segment)

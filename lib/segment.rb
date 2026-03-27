@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'time_utils'
 require_relative 'segment_type'
 
 # Trips are composed by segments.
@@ -11,12 +10,12 @@ class Segment
   attr_reader :type, :from, :to, :datetime_from, :datetime_to
   attr_accessor :is_connection
 
-  def initialize(type, from, to, datetime_from, datetime_to, time_from, time_to) # rubocop:disable Metrics/ParameterLists
+  def initialize(type:, from:, to:, datetime_from:, datetime_to:)
     @type = type
     @from = from
     @to = to
-    @datetime_from = TimeUtils.to_time(datetime_from, time_from)
-    @datetime_to = TimeUtils.to_time(datetime_to, time_to)
+    @datetime_from = datetime_from
+    @datetime_to = datetime_to
     @is_connection = false
   end
 

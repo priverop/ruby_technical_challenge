@@ -2,11 +2,24 @@
 
 require 'spec_helper'
 require 'itinerary'
+require 'time_utils'
 
 RSpec.describe Itinerary do
-  let(:flight_segment) { Segment.new('Flight', 'SVQ', 'BCN', '2023-03-02', '2023-03-02', '06:40', '09:10') }
-  let(:train_segment) { Segment.new('Train', 'MAD', 'SVQ', '2023-02-17', '2023-02-17', '17:00', '19:30') }
-  let(:hotel_segment) { Segment.new('Hotel', 'MAD', 'MAD', '2023-02-15', '2023-02-17', nil, nil) }
+  let(:flight_segment) do
+    Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
+                datetime_to: TimeUtils.to_time('2023-03-02', '09:10'))
+  end
+  let(:train_segment) do
+    Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
+                datetime_from: TimeUtils.to_time('2023-02-17', '17:00'),
+                datetime_to: TimeUtils.to_time('2023-02-17', '19:30'))
+  end
+  let(:hotel_segment) do
+    Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
+                datetime_from: TimeUtils.to_time('2023-02-15', nil),
+                datetime_to: TimeUtils.to_time('2023-02-17', nil))
+  end
 
   let(:train_generic_travel_text) { 'from MAD to SVQ at 2023-02-17 17:00 to 19:30' }
   let(:flight_generic_travel_text) { 'from SVQ to BCN at 2023-03-02 06:40 to 09:10' }
@@ -61,7 +74,11 @@ RSpec.describe Itinerary do
 
     context 'when the segment has an Unknown type' do
       it 'raises SegmentTypeNotCompatibleError' do
-        car_segment = Segment.new('Car', 'MAD', 'BCN', '2026-03-02', '2026-03-02', '09:00', '17:00')
+        car_segment = Segment.new(
+          type: 'Car', from: 'MAD', to: 'BCN',
+          datetime_from: TimeUtils.to_time('2026-03-02', '09:00'),
+          datetime_to: TimeUtils.to_time('2026-03-02', '17:00')
+        )
 
         expect do
           described_class.segment_to_text(car_segment)
