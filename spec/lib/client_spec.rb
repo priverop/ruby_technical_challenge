@@ -36,5 +36,15 @@ RSpec.describe Client do
         end.to raise_error(TravelManager::FileNotFoundError, 'spec/fixtures/ is a directory')
       end
     end
+
+    context 'when the file exists but is empty' do
+      let(:empty_file) { File.join(fixtures_path, 'empty_file.txt') }
+
+      it 'raises FileEmptyError' do
+        expect do
+          described_class.read(empty_file)
+        end.to raise_error(TravelManager::FileEmptyError, "#{empty_file} is empty")
+      end
+    end
   end
 end
