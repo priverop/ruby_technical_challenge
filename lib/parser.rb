@@ -10,9 +10,9 @@ class Parser
     generic_segment_pattern: /^SEGMENT:\s+(\w+)/,
     trip_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+->\s+(\w+)\s+(\d{2}:\d{2})$/,
     hotel_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+->\s+(\d{4}-\d{2}-\d{2})$/
-  }
+  }.freeze
 
-  # Creates an array of Segments from the reservations full text of the user
+  # Creates an array of Segments from the reservations text of the user.
   #
   # @param reservations [String] input reservation text
   # @return [Array] parsed Segments
