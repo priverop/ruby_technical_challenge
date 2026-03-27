@@ -2,7 +2,7 @@
 
 require_relative 'client'
 require_relative 'parser'
-require_relative 'finder'
+require_relative 'trip_builder'
 require_relative 'text_formatter'
 
 ## Main module entry-point - Main controller
@@ -17,7 +17,7 @@ module TravelManager
 
     input_reservations = Client.read(input_file)
     unsorted_segments = Parser.parse(input_reservations)
-    sorted_trips = Finder.find(unsorted_segments, based)
+    sorted_trips = TripBuilder.build(unsorted_segments, based)
 
     return 'ERROR!' if sorted_trips.nil? # TODO: better error
 

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'finder'
+require 'trip_builder'
 
-RSpec.describe Finder do
+RSpec.describe TripBuilder do
   let(:unsorted_segments) do
     [
       Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
@@ -70,10 +70,10 @@ RSpec.describe Finder do
     ]
   end
 
-  describe '.find' do
+  describe '.build' do
     context 'when passing a valid segment' do
       it 'returns an array of Trips' do
-        result = described_class.find(unsorted_segments, 'SVQ')
+        result = described_class.build(unsorted_segments, 'SVQ')
 
         expect(result.count).to eq(3)
         expect(result.first.destiny).to eq('BCN')

@@ -5,10 +5,10 @@ require_relative 'time_utils'
 require_relative 'trip'
 
 # Links segments to each other to make itineraries
-class Finder
+class TripBuilder
   CONNECTION_HOURS_LIMIT = 24
 
-  def self.find(segments, based)
+  def self.build(segments, based)
     # Gets all the segments that start in the based location
     based_segments = segments.select { |segment| segment.from == based }
                              .sort_by(&:datetime_from)
