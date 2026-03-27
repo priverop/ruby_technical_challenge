@@ -4,10 +4,17 @@ require_relative 'segment'
 require_relative 'time_utils'
 require_relative 'trip'
 
-# Links segments to each other to make itineraries
+# Links segments to each other to make itineraries.
 class TripBuilder
   CONNECTION_HOURS_LIMIT = 24
 
+  # Build all the Trips for the itinerary.
+  #
+  # @param segments [Array] unsorted segments to pull from.
+  # @param based [String] starting location of the user.
+  #
+  # @return [Array] sorted Trips with sorted segments and destination.
+  #
   def self.build(segments, based)
     # Gets all the segments that start in the based location
     based_segments = segments.select { |segment| segment.from == based }
@@ -15,7 +22,7 @@ class TripBuilder
 
     return if based_segments.empty? # TODO: do we need to return the specific error?
 
-    based_segments.map do |based_start|
+    based_segments.map do |based_start| # TODO: controlar estas cosas, fallos
       sorted_segments = sorted_segments(based_start, segments)
       destination = find_trip_destination(sorted_segments)
       Trip.new(destination, sorted_segments)
@@ -30,7 +37,13 @@ class TripBuilder
     sorted_segments.find { |segment| !segment.connection? }.to
   end
 
-  # Gets all the linked segments starting from the "previous" segment (which is the based_segment)
+  # Gets all the linked segments starting from the "previous" segment.
+  #
+  # @param previous [Segment] based segment, where the trip starts.
+  # @param segments [Array] unsorted segments.
+  #
+  # @return [Array] sorted segments or empty if links not found.
+  #
   def self.sorted_segments(previous, segments)
     sorted = []
     loop do
@@ -44,8 +57,11 @@ class TripBuilder
     sorted
   end
 
-  # Gets the next linked segment of the "previous" segment
-  # TODO: this returns the first one, what if there are multiple in the same day?
+  # Gets the next linked segment of the "previous" segment.
+  #
+  # @param segments [Array] unsorted segments to look for the link.
+  # @param previous [Segment] "before" segment.
+  # @return [Segment] following segment to the "previous" param.
   def self.find_link(segments, previous)
     segments.find do |segment|
       segment.from == previous.to &&
@@ -65,7 +81,7 @@ class TripBuilder
   #
   # @param previous [Segment] starting flight.
   # @param next_segment [Segment] following flight.
-  # @return [Boolean] true if conditions are met
+  # @return [Boolean] true if conditions are met.
   def self.check_connection(previous, next_segment) # rubocop:disable Naming/PredicateMethod
     if next_segment.flight? && previous.flight? &&
        next_segment != previous &&

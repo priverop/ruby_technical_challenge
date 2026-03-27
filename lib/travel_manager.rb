@@ -58,7 +58,7 @@ module TravelManager
   # Validates the based param.
   #
   # @param based [STRING] user location.
-  # @raise TravelManager::ArgumentError if is not a string, not 3 characters long or not uppercase.
+  # @raise ArgumentError if is not a string, not 3 characters long or not uppercase.
   # @return [void, nil] nil if validation is correct.
   def self.validate_based!(based)
     return unless !based.is_a?(String) || based.length != 3 || based != based.upcase

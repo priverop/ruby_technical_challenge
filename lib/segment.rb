@@ -10,6 +10,14 @@ class Segment
   attr_reader :type, :from, :to, :datetime_from, :datetime_to
   attr_accessor :is_connection
 
+  # Creates a new instance of Segment object.
+  #
+  # @param type [String] type of the Segment.
+  # @param from [String] location origin of the Segment.
+  # @param to [String] location destination of the Segment.
+  # @param datetime_from [Time] when the Segment starts.
+  # @param datetime_to [Time] when the Segment ends.
+  # @return [void]
   def initialize(type:, from:, to:, datetime_from:, datetime_to:)
     @type = type
     @from = from
@@ -19,6 +27,9 @@ class Segment
     @is_connection = false
   end
 
+  # Attributes of the Segment. Useful for testing.
+  #
+  # @return [Hash] attributes of the Segment.
   def attributes
     {
       type: type,
@@ -30,15 +41,24 @@ class Segment
     }
   end
 
+  # Checks if the segment is a Flight.
+  #
+  # @return [Boolean] true if segment has Flight type.
   def flight?
     type == SegmentType::FLIGHT
   end
 
+  # Checks if the segment is a connection trip.
+  #
+  # @return [Boolean] value of is_connection.
   def connection?
     is_connection
   end
 
-  # To compare segments when testing
+  # To compare segments when testing.
+  #
+  # @param other [Segment] the other Segment to compare with.
+  # @return [Boolean] true if same attributes.
   def ==(other)
     return false unless other.is_a?(Segment)
 

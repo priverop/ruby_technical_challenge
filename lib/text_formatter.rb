@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Array to Text
+# Transforms Trips into text.
 class TextFormatter
   # Formats an array of Trips into text.
   #
@@ -32,7 +32,7 @@ class TextFormatter
 
   # Formats a single Segment into text.
   #
-  # @raise [TravelManager::SegmentTypeNotCompatibleError] if the segment type has not a method to_text implemented.
+  # @raise [SegmentTypeNotCompatibleError] if the segment type has not a method to_text implemented.
   # @param segment [Segment] the segment to format.
   # @return [String, nil] formatted text, or nil if the segment is nil.
   def self.segment_to_text(segment)
@@ -82,6 +82,6 @@ class TextFormatter
   def self.travel_to_text(segment)
     return if segment.nil?
 
-    "from #{segment.from} to #{segment.to} at #{TimeUtils.datetime(segment.datetime_from)} to #{TimeUtils.hour(segment.datetime_to)}"
+    "from #{segment.from} to #{segment.to} at #{TimeUtils.datetime(segment.datetime_from)} to #{TimeUtils.time(segment.datetime_to)}"
   end
 end

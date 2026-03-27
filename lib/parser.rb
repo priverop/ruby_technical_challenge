@@ -14,8 +14,8 @@ class Parser
 
   # Creates an array of Segments from the reservations text of the user.
   #
-  # @param reservations [String] input reservation text
-  # @return [Array] parsed Segments
+  # @param reservations [String] input reservation text.
+  # @return [Array] parsed Segments.
   def self.parse(reservations)
     return [] if reservations.nil?
 
@@ -33,6 +33,7 @@ class Parser
   # Creates a Segment from Segment text line (Hotel/Flight/Train).
   #
   # @param line [String] SEGMENT: text line.
+  # @raise [SegmentTypeNotCompatibleError] if the Segment.Type is not supported.
   # @return [Segment] segment of the right type.
   def self.segment(line)
     pattern = TEXT_PATTERNS[:generic_segment_pattern]
@@ -50,7 +51,7 @@ class Parser
 
   # Creates a Segment from a Flight text line.
   #
-  # @param [String] flight text line.
+  # @param trip_line [String] flight text line.
   # @return [Segment]
   def self.flight_segment(trip_line)
     trip_segment(trip_line)
@@ -58,15 +59,15 @@ class Parser
 
   # Creates a Segment from a Train text line.
   #
-  # @param [String] train text line.
+  # @param trip_line [String] train text line.
   # @return [Segment]
   def self.train_segment(trip_line)
     trip_segment(trip_line)
   end
 
-  # Creates a Segment from a Flight/Train Segment text line
+  # Creates a Segment from a Flight/Train Segment text line.
   #
-  # @param [String] text line of type Flight/Train
+  # @param trip_line [String] text line of type Flight/Train.
   # @return [Segment]
   def self.trip_segment(trip_line)
     pattern = TEXT_PATTERNS[:trip_segment_pattern]
@@ -82,9 +83,9 @@ class Parser
     )
   end
 
-  # Creates a Segment from a Hotel Segment text line
+  # Creates a Segment from a Hotel Segment text line.
   #
-  # @param [String] text line of type Hotel
+  # @param hotel_line [String] text line of type Hotel.
   # @return [Segment]
   def self.hotel_segment(hotel_line)
     pattern = TEXT_PATTERNS[:hotel_segment_pattern]
