@@ -22,7 +22,7 @@ class Parser
     segments = []
 
     reservations.split("\n").each do |line|
-      next if line == TEXT_PATTERNS[:reservation_key]
+      next if line == TEXT_PATTERNS[:reservation_pattern]
 
       parsed_segment = segment(line)
       segments.push(parsed_segment) if parsed_segment
