@@ -25,7 +25,7 @@ RSpec.describe TravelManager do
 
         result = described_class.itinerary(input_file, based)
 
-        expect(result).to eq('ERROR!')
+        expect(result).to eq('ERROR: there was an error building the trips, please review the input file')
       end
     end
 
