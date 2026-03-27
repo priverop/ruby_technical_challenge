@@ -39,13 +39,28 @@ class Parser
 
     return unless matcher
 
-    type = matcher.captures # TODO: change to matcher[1] and do a switch
+    type = matcher.captures.first
+    method_name = "#{type.downcase}_segment"
 
-    if type.include?('Hotel') # TODO: More robust?
-      hotel_segment(line)
-    else
-      trip_segment(line)
-    end
+    raise TravelManager::SegmentTypeNotCompatibleError, "Unknown segment type: #{type}" unless respond_to?(method_name)
+
+    send(method_name, line)
+  end
+
+  # Creates a Segment from a Flight text line.
+  #
+  # @param [String] flight text line.
+  # @return [Segment]
+  def self.flight_segment(trip_line)
+    trip_segment(trip_line)
+  end
+
+  # Creates a Segment from a Train text line.
+  #
+  # @param [String] train text line.
+  # @return [Segment]
+  def self.train_segment(trip_line)
+    trip_segment(trip_line)
   end
 
   # Creates a Segment from a Flight/Train Segment text line
