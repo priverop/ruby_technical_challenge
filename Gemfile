@@ -10,4 +10,11 @@ group :development, :test do
   gem 'simplecov'
 end
 
-gem 'yard', '~> 0.9.38', group: :development
+group :development do
+  gem 'yard', '~> 0.9.38'
+
+  # Yard dependencies:
+  gem 'rack', '~> 3.2'
+  gem 'rackup', '~> 2.3'
+  gem 'webrick', '~> 1.9'
+end
