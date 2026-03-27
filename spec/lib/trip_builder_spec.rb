@@ -76,7 +76,7 @@ RSpec.describe TripBuilder do
         result = described_class.build(unsorted_segments, 'SVQ')
 
         expect(result.count).to eq(3)
-        expect(result.first.destiny).to eq('BCN')
+        expect(result.first.destination).to eq('BCN')
         expect(result.first.sorted_segments.count).to eq(3)
         expect(result.first.sorted_segments.last).to have_attributes(
           type: 'Flight',
@@ -85,7 +85,7 @@ RSpec.describe TripBuilder do
           datetime_from: TimeUtils.datetime_to_time('2023-01-10', '10:30'),
           datetime_to: TimeUtils.datetime_to_time('2023-01-10', '11:50')
         )
-        expect(result.at(1).destiny).to eq('MAD')
+        expect(result.at(1).destination).to eq('MAD')
         expect(result.at(1).sorted_segments.count).to eq(3)
         expect(result.at(1).sorted_segments.last).to have_attributes(
           type: 'Train',
@@ -94,7 +94,7 @@ RSpec.describe TripBuilder do
           datetime_from: TimeUtils.datetime_to_time('2023-02-17', '17:00'),
           datetime_to: TimeUtils.datetime_to_time('2023-02-17', '19:30')
         )
-        expect(result.last.destiny).to eq('NYC')
+        expect(result.last.destination).to eq('NYC')
         expect(result.last.sorted_segments.count).to eq(2)
         expect(result.last.sorted_segments.last).to have_attributes(
           type: 'Flight',
@@ -246,44 +246,44 @@ RSpec.describe TripBuilder do
     end
   end
 
-  describe '.find_trip_destiny' do
+  describe '.find_trip_destination' do
     context 'when no connection flights, and hotel' do
-      it 'returns the first destiny' do
-        result = described_class.find_trip_destiny(trip_with_hotel)
+      it 'returns the first destination' do
+        result = described_class.find_trip_destination(trip_with_hotel)
 
         expect(result).to be('BCN')
       end
     end
 
     context 'when no connection flights, flights same day' do
-      it 'returns the first destiny' do
-        result = described_class.find_trip_destiny(trip_without_hotel_same_day)
+      it 'returns the first destination' do
+        result = described_class.find_trip_destination(trip_without_hotel_same_day)
 
         expect(result).to be('MAD')
       end
     end
 
     context 'when no connection flights, no hotel, different days (layover)' do
-      it 'returns the first destiny' do
-        result = described_class.find_trip_destiny(trip_without_hotel_different_day)
+      it 'returns the first destination' do
+        result = described_class.find_trip_destination(trip_without_hotel_different_day)
 
         expect(result).to be('MAD')
       end
     end
 
     context 'when connection flights, flights same day, <24h' do
-      it 'returns the first destiny' do
+      it 'returns the first destination' do
         trip_without_hotel_same_day.first.is_connection = true
-        result = described_class.find_trip_destiny(trip_without_hotel_same_day)
+        result = described_class.find_trip_destination(trip_without_hotel_same_day)
 
         expect(result).to be('NYC')
       end
     end
 
     context 'when connection flights, no hotel, different days (layover)' do
-      it 'returns the first destiny' do
+      it 'returns the first destination' do
         trip_without_hotel_different_day.first.is_connection = true
-        result = described_class.find_trip_destiny(trip_without_hotel_different_day)
+        result = described_class.find_trip_destination(trip_without_hotel_different_day)
 
         expect(result).to be('NYC')
       end

@@ -17,16 +17,16 @@ class TripBuilder
 
     based_segments.map do |based_start|
       sorted_segments = sorted_segments(based_start, segments)
-      destiny = find_trip_destiny(sorted_segments)
-      Trip.new(destiny, sorted_segments)
+      destination = find_trip_destination(sorted_segments)
+      Trip.new(destination, sorted_segments)
     end
   end
 
-  # Gets the destiny of the trip, ignoring connection flights.
+  # Gets the destination of the trip, ignoring connection flights.
   #
   # @param sorted_segments [Array] sorted trip segments.
   # @return [String] the trip destination.
-  def self.find_trip_destiny(sorted_segments)
+  def self.find_trip_destination(sorted_segments)
     sorted_segments.find { |segment| !segment.connection? }.to
   end
 

@@ -27,7 +27,7 @@ class TextFormatter
       segment_to_text(segment)
     end
 
-    segments_text.unshift("TRIP to #{trip.destiny}") unless segments_text.empty?
+    segments_text.unshift("TRIP to #{trip.destination}") unless segments_text.empty?
   end
 
   # Formats a single Segment into text.
