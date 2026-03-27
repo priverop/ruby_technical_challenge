@@ -9,3 +9,5 @@ group :development, :test do
   gem 'rubocop-rspec'
   gem 'simplecov'
 end
+
+gem 'yard', '~> 0.9.38', group: :development

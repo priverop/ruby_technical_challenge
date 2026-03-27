@@ -90,6 +90,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.2.0)
+    yard (0.9.38)
 
 PLATFORMS
   ruby
@@ -101,6 +102,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   simplecov
+  yard (~> 0.9.38)
 
 BUNDLED WITH
    2.7.2
