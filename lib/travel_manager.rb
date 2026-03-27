@@ -3,7 +3,7 @@
 require_relative 'client'
 require_relative 'parser'
 require_relative 'finder'
-require_relative 'itinerary'
+require_relative 'text_formatter'
 
 ## Main module entry-point - Main controller
 # This library transforms the reservations into itineraries
@@ -21,7 +21,7 @@ module TravelManager
 
     return 'ERROR!' if sorted_trips.nil? # TODO: better error
 
-    sorted_trip_texts = Itinerary.generate(sorted_trips)
+    sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips)
 
     print_itinerary(sorted_trip_texts)
   end

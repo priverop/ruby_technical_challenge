@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'itinerary'
+require 'text_formatter'
 require 'time_utils'
 
-RSpec.describe Itinerary do
+RSpec.describe TextFormatter do
   let(:flight_segment) do
     Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
                 datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),

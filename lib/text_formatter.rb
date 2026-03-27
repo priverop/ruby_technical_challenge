@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 # Array to Text
-class Itinerary
+class TextFormatter
   # Formats an array of Trips into text.
   #
   # @param trips [Array] array of trips to format.
   # @return [Array, nil] array of arrays with every trip formatted as text,
   # or nil if the trip array is nil or empty.
-  def self.generate(trips)
+  def self.trips_to_text(trips)
     return if trips.nil? || trips.empty?
 
     trips.map do |trip|
