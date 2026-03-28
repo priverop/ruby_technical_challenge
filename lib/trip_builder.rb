@@ -11,22 +11,22 @@ class TripBuilder
   class << self
     # Build all the Trips for the itinerary.
     #
-    # @param segments [Array] unsorted segments to pull from.
+    # @param unsorted_segments [Array] unsorted segments to pull from.
     # @param based [String] starting location of the user.
     #
     # @return [Array] sorted Trips with sorted segments and destination.
     #
-    def build(segments, based)
+    def build(unsorted_segments, based)
       # Gets all the segments that start in the based location
-      based_segments = segments.select { |segment| segment.from == based }
-                               .sort_by(&:datetime_from)
+      based_segments = unsorted_segments.select { |segment| segment.from == based }
+                                        .sort_by(&:datetime_from)
 
-      return if based_segments.empty? # TODO: do we need to return the specific error?
+      return if based_segments.empty?
 
-      based_segments.map do |based_start| # TODO: controlar estas cosas, fallos
-        sorted_segs = sorted_segments(based_start, segments)
-        destination = find_trip_destination(sorted_segs)
-        Trip.new(destination, sorted_segs)
+      based_segments.map do |based_start|
+        sorted_segments = sorted_segments(based_start, unsorted_segments)
+        destination = find_trip_destination(sorted_segments)
+        Trip.new(destination, sorted_segments)
       end
     end
 
@@ -43,15 +43,15 @@ class TripBuilder
     # Gets all the linked segments starting from the "previous" segment.
     #
     # @param previous [Segment] based segment, where the trip starts.
-    # @param segments [Array] unsorted segments.
+    # @param unsorted_segments [Array] unsorted segments.
     #
     # @return [Array] sorted segments or empty if links not found.
     #
-    def sorted_segments(previous, segments)
+    def sorted_segments(previous, unsorted_segments)
       sorted = []
       loop do
         sorted.push(previous)
-        next_segment = find_link(segments, previous)
+        next_segment = find_link(unsorted_segments, previous)
         break if next_segment.nil? # no more segments in the trip
 
         check_connection(previous, next_segment)
@@ -62,11 +62,11 @@ class TripBuilder
 
     # Gets the next linked segment of the "previous" segment.
     #
-    # @param segments [Array] unsorted segments to look for the link.
+    # @param unsorted_segments [Array] unsorted segments to look for the link.
     # @param previous [Segment] "before" segment.
     # @return [Segment] following segment to the "previous" param.
-    def find_link(segments, previous)
-      segments.find do |segment|
+    def find_link(unsorted_segments, previous)
+      unsorted_segments.find do |segment|
         segment.from == previous.to &&
           (
             # Hotel times are 00:00, which messes up with the hour difference

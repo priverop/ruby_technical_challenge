@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: include lib folder
-
-# TODO: BASED env
-
 require 'bundler/setup'
 require 'debug'
 require_relative 'lib/travel_manager'

@@ -18,7 +18,7 @@ class TextFormatter
 
     private
 
-    # Formats the entire Trip into text.
+    # Formats a single Trip into text.
     #
     # @param trip [Trip] the trip to format.
     # @return [Array, nil] string for every segment, plus the header TRIP TO,
