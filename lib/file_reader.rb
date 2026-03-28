@@ -3,7 +3,7 @@
 require_relative 'travel_manager'
 
 ## I/O class to manage binary files.
-class Client
+class FileReader
   class << self
     # Reads text from the file.
     #

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'client'
+require 'file_reader'
 
-RSpec.describe Client do
+RSpec.describe FileReader do
   let(:fixtures_path) { File.join(File.expand_path('../', __dir__), 'fixtures') }
 
   describe '.read' do
     context 'when the file exists' do
-      let(:file) { File.join(fixtures_path, 'client.txt') }
-      let(:file_content) { 'Testing the client' }
+      let(:file) { File.join(fixtures_path, 'file_reader.txt') }
+      let(:file_content) { 'Testing the file_reader' }
 
       it 'returns the file content' do
         result = described_class.read(file)

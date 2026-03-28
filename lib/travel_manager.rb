@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'client'
+require_relative 'file_reader'
 require_relative 'parser'
 require_relative 'trip_builder'
 require_relative 'text_formatter'
@@ -24,7 +24,7 @@ module TravelManager
     def itinerary(input_file, based)
       validate_based!(based)
 
-      input_reservations = Client.read(input_file)
+      input_reservations = FileReader.read(input_file)
 
       unsorted_segments = Parser.parse(input_reservations)
 
