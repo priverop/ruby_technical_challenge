@@ -24,17 +24,188 @@ RSpec.describe Parser do
                 datetime_to: TimeUtils.to_time('2023-01-10', nil))
   end
 
+  let(:expected_segments) do
+    [
+      Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                  datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
+                  datetime_to: TimeUtils.to_time('2023-03-02', '09:10')),
+      Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                  datetime_from: TimeUtils.to_time('2023-01-05', nil),
+                  datetime_to: TimeUtils.to_time('2023-01-10', nil)),
+      Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                  datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
+                  datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
+      Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                  datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
+                  datetime_to: TimeUtils.to_time('2023-01-10', '11:50')),
+      Segment.new(type: 'Train', from: 'SVQ', to: 'MAD',
+                  datetime_from: TimeUtils.to_time('2023-02-15', '9:30'),
+                  datetime_to: TimeUtils.to_time('2023-02-15', '11:00')),
+      Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
+                  datetime_from: TimeUtils.to_time('2023-02-17', '17:00'),
+                  datetime_to: TimeUtils.to_time('2023-02-17', '19:30')),
+      Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
+                  datetime_from: TimeUtils.to_time('2023-02-15', nil),
+                  datetime_to: TimeUtils.to_time('2023-02-17', nil)),
+      Segment.new(type: 'Flight', from: 'BCN', to: 'NYC',
+                  datetime_from: TimeUtils.to_time('2023-03-02', '15:00'),
+                  datetime_to: TimeUtils.to_time('2023-03-02', '22:45'))
+    ]
+  end
+
   describe '.parse' do
     context 'when the input text file is valid' do
-      it 'returns array of valid Segments' do
-        # TODO: mock segment()
-        input = <<~TEXT
+      let(:input_reservations) do
+        <<~TEXT
           RESERVATION
           SEGMENT: Flight SVQ 2023-03-02 06:40 -> BCN 09:10
-          SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10
-        TEXT
 
-        skip 'TBI'
+          RESERVATION
+          SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          SEGMENT: Flight BCN 2023-01-10 10:30 -> SVQ 11:50
+
+          RESERVATION
+          SEGMENT: Train SVQ 2023-02-15 09:30 -> MAD 11:00
+          SEGMENT: Train MAD 2023-02-17 17:00 -> SVQ 19:30
+
+          RESERVATION
+          SEGMENT: Hotel MAD 2023-02-15 -> 2023-02-17
+
+          RESERVATION
+          SEGMENT: Flight BCN 2023-03-02 15:00 -> NYC 22:45
+        TEXT
+      end
+
+      it 'returns array of valid Segments' do
+        result = described_class.parse(input_reservations)
+        expect(result).to eq(expected_segments)
+      end
+    end
+
+    context 'when the input text file is valid and smaller' do
+      let(:small_input_reservations) do
+        <<~TEXT
+          RESERVATION
+          SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          SEGMENT: Flight BCN 2023-01-10 10:30 -> SVQ 11:50
+        TEXT
+      end
+
+      it 'returns array of valid Segments' do
+        expected = [
+          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TimeUtils.to_time('2023-01-10', nil)),
+          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
+          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+        ]
+
+        result = described_class.parse(small_input_reservations)
+        expect(result).to eq(expected)
+      end
+    end
+
+    context 'when the input text file has hotel line without SEGMENT:' do
+      let(:input_reservations) do
+        <<~TEXT
+          RESERVATION
+          Hotel BCN 2023-01-05 -> 2023-01-10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          SEGMENT: Flight BCN 2023-01-10 10:30 -> SVQ 11:50
+        TEXT
+      end
+
+      it 'ignored the hotel line and returns array of flight Segments' do
+        expected = [
+          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
+          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+        ]
+
+        result = described_class.parse(input_reservations)
+        expect(result).to eq(expected)
+      end
+    end
+
+    context 'when the input text file has lines without time:' do
+      let(:input_reservations) do
+        <<~TEXT
+          RESERVATION
+          SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 -> BCN
+          SEGMENT: Flight BCN 2023-01-10 -> SVQ
+        TEXT
+      end
+
+      it 'ignores the fligh lines and returns hotel Segments' do
+        expected = [
+          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TimeUtils.to_time('2023-01-10', nil))
+        ]
+
+        result = described_class.parse(input_reservations)
+        expect(result).to eq(expected)
+      end
+    end
+
+    context 'when the input text file has malformed dates' do
+      let(:input_reservations) do
+        <<~TEXT
+          RESERVATION
+          SEGMENT: Hotel BCN 01-01-2023 -> 01-01-2023
+
+          RESERVATION
+          SEGMENT: Flight SVQ TODAY 20:40 -> BCN 22:10
+          SEGMENT: Train BCN 2023-01-10 10:30 -> SVQ 11:50
+        TEXT
+      end
+
+      it 'ignores hotel and flight and returns array of the train Segments' do
+        expected = [
+          Segment.new(type: 'Train', from: 'BCN', to: 'SVQ',
+                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+        ]
+
+        result = described_class.parse(input_reservations)
+        expect(result).to eq(expected)
+      end
+    end
+
+    context 'when the input text file has hotel line without Hotel' do
+      let(:input_reservations) do
+        <<~TEXT
+          RESERVATION
+          SEGMENT: BCN 2023-01-05 -> 2023-01-10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          SEGMENT: Flight BCN 2023-01-10 10:30 -> SVQ 11:50
+        TEXT
+      end
+
+      it 'raises SegmentTypeNotCompatibleError of valid Segments' do
+        expect do
+          described_class.parse(input_reservations)
+        end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: BCN')
       end
     end
 

@@ -71,8 +71,8 @@ RSpec.describe TripBuilder do
   end
 
   describe '.build' do
-    context 'when passing a valid segment' do
-      it 'returns an array of Trips' do
+    context 'when passing valid segments' do
+      it 'returns a valid array of Trips' do
         result = described_class.build(unsorted_segments, 'SVQ')
 
         expect(result.count).to eq(3)
@@ -105,6 +105,45 @@ RSpec.describe TripBuilder do
         )
       end
     end
+
+    context 'when passing segments with no based_segments' do
+      it 'returns nil' do
+        based = 'ALC'
+
+        result = described_class.build(unsorted_segments, based)
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when passing based segments with no extra linkeable segments' do
+      # Use case: they forgot to make the hotel reservations.
+      it 'returns only the based segments' do
+        based = 'NYC'
+
+        unsorted_segments = [
+          Segment.new(type: 'Flight', from: 'NYC', to: 'LAX',
+                      datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
+                      datetime_to: TimeUtils.to_time('2023-03-02', '09:10')),
+          Segment.new(type: 'Hotel', from: 'LAX', to: 'NYC',
+                      datetime_from: TimeUtils.to_time('2023-03-05', '09:00'),
+                      datetime_to: TimeUtils.to_time('2023-03-05', '12:00')),
+          Segment.new(type: 'Flight', from: 'NYC', to: 'JFK',
+                      datetime_from: TimeUtils.to_time('2023-06-02', '15:00'),
+                      datetime_to: TimeUtils.to_time('2023-06-02', '22:45')),
+          Segment.new(type: 'Flight', from: 'JFK', to: 'NYC',
+                      datetime_from: TimeUtils.to_time('2023-06-04', '15:00'),
+                      datetime_to: TimeUtils.to_time('2023-06-04', '22:45'))
+        ]
+
+        result = described_class.build(unsorted_segments, based)
+
+        expect(result.count).to eq(2)
+        expect(result.first.destination).to eq('LAX')
+        expect(result.first.sorted_segments).to eq([unsorted_segments.first])
+        expect(result.last.destination).to eq('JFK')
+        expect(result.last.sorted_segments).to eq([unsorted_segments[2]])
+      end
+    end
   end
 
   describe '.sorted_segments' do
@@ -125,10 +164,6 @@ RSpec.describe TripBuilder do
           datetime_to: TimeUtils.datetime_to_time('2023-02-17', '19:30')
         )
       end
-    end
-
-    context 'when passing a nil segment as previous, and a valid array' do
-      skip 'think, is this worth it?'
     end
 
     context 'when passing an empty array, with the previous segment' do

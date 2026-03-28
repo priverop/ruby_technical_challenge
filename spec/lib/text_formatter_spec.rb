@@ -28,10 +28,49 @@ RSpec.describe TextFormatter do
   let(:train_travel_text) { 'Train from MAD to SVQ at 2023-02-17 17:00 to 19:30' }
   let(:hotel_text) { 'Hotel at MAD on 2023-02-15 to 2023-02-17' }
 
-  describe '.generate' do
+  describe '.trips_to_text' do
     context 'when the trips array is valid' do
+      let(:expected_trips_text) do
+        [
+          [
+            'TRIP to MAD',
+            'Flight from SVQ to BCN at 2023-03-02 06:40 to 09:10',
+            'Hotel at MAD on 2023-02-15 to 2023-02-17',
+            'Train from MAD to SVQ at 2023-02-17 17:00 to 19:30'
+          ],
+          [
+            'TRIP to BCN',
+            'Flight from SVQ to BCN at 2023-03-02 06:40 to 09:10',
+            'Hotel at MAD on 2023-02-15 to 2023-02-17',
+            'Train from MAD to SVQ at 2023-02-17 17:00 to 19:30'
+          ],
+          [
+            'TRIP to NYC',
+            'Flight from SVQ to BCN at 2023-03-02 06:40 to 09:10',
+            'Hotel at MAD on 2023-02-15 to 2023-02-17',
+            'Train from MAD to SVQ at 2023-02-17 17:00 to 19:30'
+          ]
+        ]
+      end
+
       it 'returns the array of arrays with the right text' do
-        skip 'TBD'
+        trips = [
+          Trip.new('MAD', [flight_segment, hotel_segment, train_segment]),
+          Trip.new('BCN', [flight_segment, hotel_segment, train_segment]),
+          Trip.new('NYC', [flight_segment, hotel_segment, train_segment])
+        ]
+
+        result = described_class.trips_to_text(trips)
+        expect(result).to eq(expected_trips_text)
+      end
+    end
+
+    context 'when the trips array is empty' do
+      it 'returns nil' do
+        trips = []
+
+        result = described_class.trips_to_text(trips)
+        expect(result).to be_nil
       end
     end
   end
@@ -39,7 +78,20 @@ RSpec.describe TextFormatter do
   describe '.trip_to_text' do
     context 'when the trip object is valid' do
       it 'returns the array of segment with the TRIP header' do
-        skip 'TBD'
+        skip '?'
+        trip = Trip.new('MAD', [flight_segment, train_segment, hotel_segment])
+        result = described_class.send(:trip_to_text, trip)
+
+        expect(result).to eq('TRIP to ') # WIP
+      end
+    end
+
+    context 'when the trip is valid but the segments are empty' do
+      it 'returns nil' do
+        trip = Trip.new('MAD', [])
+        result = described_class.send(:trip_to_text, trip)
+
+        expect(result).to be_nil
       end
     end
   end
