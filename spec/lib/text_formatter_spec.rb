@@ -49,7 +49,7 @@ RSpec.describe TextFormatter do
       it 'delegates to flight_to_text' do
         allow(described_class).to receive(:flight_to_text).with(flight_segment).and_return(flight_travel_text)
 
-        result = described_class.segment_to_text(flight_segment)
+        result = described_class.send(:segment_to_text, flight_segment)
         expect(result).to eq(flight_travel_text)
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe TextFormatter do
       it 'delegates to train_to_text' do
         allow(described_class).to receive(:train_to_text).with(train_segment).and_return(train_travel_text)
 
-        result = described_class.segment_to_text(train_segment)
+        result = described_class.send(:segment_to_text, train_segment)
         expect(result).to eq(train_travel_text)
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe TextFormatter do
       it 'delegates to hotel_to_text' do
         allow(described_class).to receive(:hotel_to_text).with(hotel_segment).and_return(hotel_text)
 
-        result = described_class.segment_to_text(hotel_segment)
+        result = described_class.send(:segment_to_text, hotel_segment)
         expect(result).to eq(hotel_text)
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe TextFormatter do
         )
 
         expect do
-          described_class.segment_to_text(car_segment)
+          described_class.send(:segment_to_text, car_segment)
         end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: Car')
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe TextFormatter do
   describe '.hotel_to_text' do
     context 'when the hotel segment is valid' do
       it 'returns the hotel text' do
-        result = described_class.hotel_to_text(hotel_segment)
+        result = described_class.send(:hotel_to_text, hotel_segment)
         expected = hotel_text
 
         expect(result).to eq(expected)
@@ -103,7 +103,7 @@ RSpec.describe TextFormatter do
       it 'returns the flight text' do
         allow(described_class).to receive(:travel_to_text).and_return(flight_generic_travel_text)
 
-        result = described_class.flight_to_text(flight_segment)
+        result = described_class.send(:flight_to_text, flight_segment)
         expected = flight_travel_text
 
         expect(result).to eq(expected)
@@ -116,7 +116,7 @@ RSpec.describe TextFormatter do
       it 'returns the train text' do
         allow(described_class).to receive(:travel_to_text).and_return(train_generic_travel_text)
 
-        result = described_class.train_to_text(train_segment)
+        result = described_class.send(:train_to_text, train_segment)
         expected = train_travel_text
 
         expect(result).to eq(expected)
@@ -127,7 +127,7 @@ RSpec.describe TextFormatter do
   describe '.travel_to_text' do
     context 'when the flight segment is valid' do
       it 'returns the generic trip text' do
-        result = described_class.travel_to_text(flight_segment)
+        result = described_class.send(:travel_to_text, flight_segment)
         expected = flight_generic_travel_text
 
         expect(result).to eq(expected)
@@ -136,7 +136,7 @@ RSpec.describe TextFormatter do
 
     context 'when the train segment is valid' do
       it 'returns the generic trip text' do
-        result = described_class.travel_to_text(train_segment)
+        result = described_class.send(:travel_to_text, train_segment)
         expected = train_generic_travel_text
 
         expect(result).to eq(expected)

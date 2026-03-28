@@ -114,7 +114,7 @@ RSpec.describe TripBuilder do
                                datetime_from: TimeUtils.to_time('2023-02-15', '9:30'),
                                datetime_to: TimeUtils.to_time('2023-02-15', '11:00'))
 
-        result = described_class.sorted_segments(previous, unsorted_segments)
+        result = described_class.send(:sorted_segments, previous, unsorted_segments)
 
         expect(result.count).to eq(3)
         expect(result.last).to have_attributes(
@@ -137,7 +137,7 @@ RSpec.describe TripBuilder do
                                datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
                                datetime_to: TimeUtils.to_time('2023-01-05', '22:10'))
 
-        result = described_class.sorted_segments(previous, [])
+        result = described_class.send(:sorted_segments, previous, [])
 
         expect(result).to eq([previous])
       end
@@ -154,7 +154,7 @@ RSpec.describe TripBuilder do
                                 datetime_from: TimeUtils.to_time('2023-01-05', nil),
                                 datetime_to: TimeUtils.to_time('2023-01-10', nil))]
 
-        result = described_class.find_link(segments, previous)
+        result = described_class.send(:find_link, segments, previous)
         expect(result).to have_attributes(
           type: 'Hotel',
           from: 'BCN',
@@ -172,7 +172,7 @@ RSpec.describe TripBuilder do
                                datetime_to: TimeUtils.to_time('2023-02-16', '18:10'))
         segments = unsorted_segments
 
-        result = described_class.find_link(segments, previous)
+        result = described_class.send(:find_link, segments, previous)
         expect(result).to have_attributes(
           type: 'Train',
           from: 'MAD',
@@ -190,7 +190,7 @@ RSpec.describe TripBuilder do
                                datetime_to: TimeUtils.to_time('2023-02-16', '12:10'))
         segments = unsorted_segments
 
-        result = described_class.find_link(segments, previous)
+        result = described_class.send(:find_link, segments, previous)
         expect(result).to be_nil
       end
     end
@@ -203,7 +203,7 @@ RSpec.describe TripBuilder do
         next_segment = trip_without_hotel_different_day.last
 
         expect(previous.connection?).to be(false)
-        result = described_class.check_connection(previous, next_segment)
+        result = described_class.send(:check_connection, previous, next_segment)
         expect(result).to be(true)
         expect(previous.connection?).to be(true)
       end
@@ -215,7 +215,7 @@ RSpec.describe TripBuilder do
         next_segment = trip_with_hotel.last
 
         expect(previous.connection?).to be(false)
-        result = described_class.check_connection(previous, next_segment)
+        result = described_class.send(:check_connection, previous, next_segment)
         expect(result).to be(false)
         expect(previous.connection?).to be(false)
       end
@@ -227,7 +227,7 @@ RSpec.describe TripBuilder do
         next_segment = trip_with_hotel.at(1)
 
         expect(previous.connection?).to be(false)
-        result = described_class.check_connection(previous, next_segment)
+        result = described_class.send(:check_connection, previous, next_segment)
         expect(result).to be(false)
         expect(previous.connection?).to be(false)
       end
@@ -239,7 +239,7 @@ RSpec.describe TripBuilder do
         next_segment = trip_with_hotel.first
 
         expect(previous.connection?).to be(false)
-        result = described_class.check_connection(previous, next_segment)
+        result = described_class.send(:check_connection, previous, next_segment)
         expect(result).to be(false)
         expect(previous.connection?).to be(false)
       end
@@ -249,7 +249,7 @@ RSpec.describe TripBuilder do
   describe '.find_trip_destination' do
     context 'when no connection flights, and hotel' do
       it 'returns the first destination' do
-        result = described_class.find_trip_destination(trip_with_hotel)
+        result = described_class.send(:find_trip_destination, trip_with_hotel)
 
         expect(result).to be('BCN')
       end
@@ -257,7 +257,7 @@ RSpec.describe TripBuilder do
 
     context 'when no connection flights, flights same day' do
       it 'returns the first destination' do
-        result = described_class.find_trip_destination(trip_without_hotel_same_day)
+        result = described_class.send(:find_trip_destination, trip_without_hotel_same_day)
 
         expect(result).to be('MAD')
       end
@@ -265,7 +265,7 @@ RSpec.describe TripBuilder do
 
     context 'when no connection flights, no hotel, different days (layover)' do
       it 'returns the first destination' do
-        result = described_class.find_trip_destination(trip_without_hotel_different_day)
+        result = described_class.send(:find_trip_destination, trip_without_hotel_different_day)
 
         expect(result).to be('MAD')
       end
@@ -274,7 +274,7 @@ RSpec.describe TripBuilder do
     context 'when connection flights, flights same day, <24h' do
       it 'returns the first destination' do
         trip_without_hotel_same_day.first.is_connection = true
-        result = described_class.find_trip_destination(trip_without_hotel_same_day)
+        result = described_class.send(:find_trip_destination, trip_without_hotel_same_day)
 
         expect(result).to be('NYC')
       end
@@ -283,7 +283,7 @@ RSpec.describe TripBuilder do
     context 'when connection flights, no hotel, different days (layover)' do
       it 'returns the first destination' do
         trip_without_hotel_different_day.first.is_connection = true
-        result = described_class.find_trip_destination(trip_without_hotel_different_day)
+        result = described_class.send(:find_trip_destination, trip_without_hotel_different_day)
 
         expect(result).to be('NYC')
       end

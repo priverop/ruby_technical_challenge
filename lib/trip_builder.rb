@@ -30,6 +30,8 @@ class TripBuilder
       end
     end
 
+    private
+
     # Gets the destination of the trip, ignoring connection flights.
     #
     # @param sorted_segments [Array] sorted trip segments.

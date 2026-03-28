@@ -16,6 +16,8 @@ class TextFormatter
       end
     end
 
+    private
+
     # Formats the entire Trip into text.
     #
     # @param trip [Trip] the trip to format.
@@ -41,7 +43,7 @@ class TextFormatter
 
       method_name = "#{segment.type.downcase}_to_text"
 
-      unless respond_to?(method_name)
+      unless respond_to?(method_name, true)
         raise TravelManager::SegmentTypeNotCompatibleError, "Unknown segment type: #{segment.type}"
       end
 

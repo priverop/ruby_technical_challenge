@@ -4,7 +4,6 @@
 class Trip
   attr_reader :destination, :sorted_segments
 
-  #
   # Creates a new instance of Trip.
   #
   # @param destination [String] where the user is headed.

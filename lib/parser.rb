@@ -8,7 +8,7 @@ class Parser
   TEXT_PATTERNS = {
     reservation_pattern: 'RESERVATION',
     generic_segment_pattern: /^SEGMENT:\s+(\w+)/,
-    trip_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+->\s+(\w+)\s+(\d{2}:\d{2})$/,
+    trip_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2})\s+->\s+(\w+)\s+(\d{2}:\d{2})$/, # rubocop:disable Layout/LineLength
     hotel_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+->\s+(\d{4}-\d{2}-\d{2})$/
   }.freeze
 
@@ -31,6 +31,8 @@ class Parser
       segments
     end
 
+    private
+
     # Creates a Segment from Segment text line (Hotel/Flight/Train).
     #
     # @param line [String] SEGMENT: text line.
@@ -45,7 +47,7 @@ class Parser
       type = matcher.captures.first
       method_name = "#{type.downcase}_segment"
 
-      unless respond_to?(method_name)
+      unless respond_to?(method_name, true)
         raise TravelManager::SegmentTypeNotCompatibleError, "Unknown segment type: #{type}"
       end
 
