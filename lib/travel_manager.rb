@@ -8,12 +8,11 @@ require_relative 'text_formatter'
 ## Main module entry-point - Main controller
 # This library transforms the reservations into itineraries
 module TravelManager
-  # TODO: Move this? If we want another TravelManager for another Company...
-  # What about CompanyA.rb?
-  class FileNotFoundError < StandardError; end
-  class FileEmptyError < StandardError; end
-  class ArgumentError < StandardError; end
-  class SegmentTypeNotCompatibleError < StandardError; end
+  class TravelManagerError < StandardError; end
+  class FileNotFoundError < TravelManagerError; end
+  class FileEmptyError < TravelManagerError; end
+  class ArgumentError < TravelManagerError; end
+  class SegmentTypeNotCompatibleError < TravelManagerError; end
 
   class << self
     # Transform the user reservations .txt into a sorted itinerary.
@@ -29,19 +28,19 @@ module TravelManager
       unsorted_segments = Parser.parse(input_reservations)
 
       if unsorted_segments.empty?
-        return 'ERROR: there was an error parsing the reservations, please review the input file'
+        raise TravelManager::TravelManagerError, 'there was an error parsing the reservations, please review the input file'
       end
 
       sorted_trips = TripBuilder.build(unsorted_segments, based)
 
       if sorted_trips.nil? || sorted_trips.empty?
-        return 'ERROR: there was an error building the trips, please review the input file'
+        raise TravelManager::TravelManagerError, 'there was an error building the trips, please review the input file'
       end
 
       sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips)
 
       if sorted_trip_texts.nil? || sorted_trip_texts.empty?
-        return 'ERROR: there was an error formatting the trips, please review the input file'
+        raise TravelManager::TravelManagerError, 'there was an error formatting the trips, please review the input file'
       end
 
       build_itinerary(sorted_trip_texts)
