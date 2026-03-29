@@ -31,4 +31,12 @@ Classic overengineering!!
 
 [Here](./claude_code_chats/5_architecture_design_first_review.md) is the conversation. Some of the ideas were just to double check.
 
-1. I ask CC to refactor the code to remove time_from and time_to from the Segment initializer, and use keyword arguments. This is specially useful when dealing with multiple arguments. It also suggested moving TimeUtils.to_time outside the Segment class (decoupling), I think it's a great idea. [Here](./claude_code_chats/6_refactor_keyword_arguments) is the plan.
+7. I ask CC to refactor the code to remove time_from and time_to from the Segment initializer, and use keyword arguments. This is specially useful when dealing with multiple arguments. It also suggested moving TimeUtils.to_time outside the Segment class (decoupling), I think it's a great idea. [Here](./claude_code_chats/6_refactor_keyword_arguments) is the plan.
+
+8. Asked CC to add YARD to TimeUtils, and make suggestions about the module. Changed to_hour to to_time, simplified guard in to_time, simplified same_dates (using `Date.to_date` ). The yard is too much, I'm removing the examples and I'm simplifying the descrptions. [Full log](./claude_code_chats/7_document_time_utils.md).
+
+9. Asked CC to check where is the Yard missing: [Log](./claude_code_chats/8_find_missing_yard_docs.md).
+
+10. Asked CC to refactor my classes to use the `class << self` syntax for class methods: [Log](./claude_code_chats/9_refactor_class_methods).
+
+11. Asked CC for a full QA review. I used ChatGPT to make the prompts (chat [here](https://chatgpt.com/share/69c99c32-7e88-8331-b821-ef0cf2aeafde)) - very very useful by the way. And then got the full analysis [here](./claude_code_chats/10_test_suite_review.md). It gave me some untested corner cases.
