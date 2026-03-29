@@ -54,7 +54,7 @@ class TripBuilder
         next_segment = find_link(unsorted_segments, previous)
         break if next_segment.nil? # no more segments in the trip
 
-        check_connection(previous, next_segment)
+        previous.is_connection = check_connection(previous, next_segment)
         previous = next_segment
       end
       sorted
@@ -79,19 +79,19 @@ class TripBuilder
       end
     end
 
-    # Sets the previous segment as is_connection, if condition is met.
+    # Checks if two segments are connection flights.
     # Two flights are a connection if there is less than 24 hours difference.
     #
     # @param previous [Segment] starting flight.
     # @param next_segment [Segment] following flight.
     # @return [Boolean] true if conditions are met.
-    def check_connection(previous, next_segment) # rubocop:disable Naming/PredicateMethod
+    def check_connection?(previous, next_segment)
       if next_segment.flight? && previous.flight? &&
          next_segment != previous &&
          TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < CONNECTION_HOURS_LIMIT
-        previous.is_connection = true
         return true
       end
+
       false
     end
   end

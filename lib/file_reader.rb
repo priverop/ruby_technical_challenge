@@ -11,7 +11,7 @@ class FileReader
     # @raise FileEmptyError if the file content is empty.
     # @return [String] content of the file.
     def read(file_path)
-      validate_file!(file_path)
+      validate_file_path!(file_path)
 
       file_content = File.read(file_path)
 
@@ -27,7 +27,7 @@ class FileReader
     # @param file_path [String] path of the file.
     # @raise FileNotFoundError if the path is a directory or doesn't exist.
     # @return [nil, void] nil if validation is ok.
-    def validate_file!(file_path)
+    def validate_file_path!(file_path)
       raise TravelManager::FileNotFoundError, "#{file_path} is a directory" if Dir.exist?(file_path)
       raise TravelManager::FileNotFoundError, "File #{file_path} not found" unless File.exist?(file_path)
     end

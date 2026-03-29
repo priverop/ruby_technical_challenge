@@ -5,8 +5,6 @@ require_relative 'segment_type'
 # Trips are composed by segments.
 # A segment can be a train/flight trip, or a hotel reservation.
 class Segment
-  include SegmentType
-
   attr_reader :type, :from, :to, :datetime_from, :datetime_to
   attr_accessor :is_connection
 
@@ -24,7 +22,7 @@ class Segment
     @to = to
     @datetime_from = datetime_from
     @datetime_to = datetime_to
-    @is_connection = false
+    @is_connection = nil
   end
 
   # Attributes of the Segment. Useful for testing.
