@@ -54,7 +54,7 @@ class TripBuilder
         next_segment = find_link(unsorted_segments, previous)
         break if next_segment.nil? # no more segments in the trip
 
-        previous.is_connection = check_connection(previous, next_segment)
+        previous.is_connection = check_connection?(previous, next_segment)
         previous = next_segment
       end
       sorted

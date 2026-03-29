@@ -237,10 +237,9 @@ RSpec.describe TripBuilder do
         previous = trip_without_hotel_different_day.first
         next_segment = trip_without_hotel_different_day.last
 
-        expect(previous.connection?).to be(false)
-        result = described_class.send(:check_connection, previous, next_segment)
+        expect(previous.connection?).to be_nil
+        result = described_class.send(:check_connection?, previous, next_segment)
         expect(result).to be(true)
-        expect(previous.connection?).to be(true)
       end
     end
 
@@ -249,10 +248,9 @@ RSpec.describe TripBuilder do
         previous = trip_with_hotel.first
         next_segment = trip_with_hotel.last
 
-        expect(previous.connection?).to be(false)
-        result = described_class.send(:check_connection, previous, next_segment)
+        expect(previous.connection?).to be_nil
+        result = described_class.send(:check_connection?, previous, next_segment)
         expect(result).to be(false)
-        expect(previous.connection?).to be(false)
       end
     end
 
@@ -261,10 +259,9 @@ RSpec.describe TripBuilder do
         previous = trip_with_hotel.first
         next_segment = trip_with_hotel.at(1)
 
-        expect(previous.connection?).to be(false)
-        result = described_class.send(:check_connection, previous, next_segment)
+        expect(previous.connection?).to be_nil
+        result = described_class.send(:check_connection?, previous, next_segment)
         expect(result).to be(false)
-        expect(previous.connection?).to be(false)
       end
     end
 
@@ -273,10 +270,9 @@ RSpec.describe TripBuilder do
         previous = trip_with_hotel.first
         next_segment = trip_with_hotel.first
 
-        expect(previous.connection?).to be(false)
-        result = described_class.send(:check_connection, previous, next_segment)
+        expect(previous.connection?).to be_nil
+        result = described_class.send(:check_connection?, previous, next_segment)
         expect(result).to be(false)
-        expect(previous.connection?).to be(false)
       end
     end
   end
