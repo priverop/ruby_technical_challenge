@@ -45,8 +45,8 @@ RSpec.describe TripBuilder do
           type: 'Flight',
           from: 'BCN',
           to: 'SVQ',
-          datetime_from: TimeUtils.datetime_to_time('2023-01-10', '10:30'),
-          datetime_to: TimeUtils.datetime_to_time('2023-01-10', '11:50')
+          datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
+          datetime_to: TimeUtils.to_time('2023-01-10', '11:50')
         )
         expect(result.at(1).destination).to eq('MAD')
         expect(result.at(1).sorted_segments.count).to eq(3)
@@ -54,8 +54,8 @@ RSpec.describe TripBuilder do
           type: 'Train',
           from: 'MAD',
           to: 'SVQ',
-          datetime_from: TimeUtils.datetime_to_time('2023-02-17', '17:00'),
-          datetime_to: TimeUtils.datetime_to_time('2023-02-17', '19:30')
+          datetime_from: TimeUtils.to_time('2023-02-17', '17:00'),
+          datetime_to: TimeUtils.to_time('2023-02-17', '19:30')
         )
         expect(result.last.destination).to eq('NYC')
         expect(result.last.sorted_segments.count).to eq(2)
@@ -63,8 +63,8 @@ RSpec.describe TripBuilder do
           type: 'Flight',
           from: 'BCN',
           to: 'NYC',
-          datetime_from: TimeUtils.datetime_to_time('2023-03-02', '15:00'),
-          datetime_to: TimeUtils.datetime_to_time('2023-03-02', '22:45')
+          datetime_from: TimeUtils.to_time('2023-03-02', '15:00'),
+          datetime_to: TimeUtils.to_time('2023-03-02', '22:45')
         )
       end
     end

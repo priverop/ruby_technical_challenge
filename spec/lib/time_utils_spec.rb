@@ -4,6 +4,82 @@ require 'spec_helper'
 require 'time_utils'
 
 RSpec.describe TimeUtils do
+  describe '.to_time' do
+    context 'when date and time are present' do
+      it 'returns a Time with date and time' do
+        result = described_class.to_time('2023-03-02', '06:40')
+
+        expect(result).to eq(Time.new(2023, 3, 2, 6, 40))
+      end
+    end
+
+    context 'when time is nil' do
+      it 'returns a Time at midnight' do
+        result = described_class.to_time('2023-03-02', nil)
+
+        expect(result).to eq(Time.new(2023, 3, 2, 0, 0))
+      end
+    end
+  end
+
+  describe '.arrival_time' do
+    context 'when arrival time is after departure time' do
+      it 'returns arrival on the same day' do
+        result = described_class.arrival_time('2023-03-02', '06:40', '09:10')
+
+        expect(result).to eq(Time.new(2023, 3, 2, 9, 10))
+      end
+    end
+
+    context 'when arrival time is before departure time (overnight)' do
+      it 'returns arrival on the next day' do
+        result = described_class.arrival_time('2023-03-02', '23:00', '02:30')
+
+        expect(result).to eq(Time.new(2023, 3, 3, 2, 30))
+      end
+    end
+
+    context 'when arrival time is midnight (overnight)' do
+      it 'returns arrival on the next day' do
+        result = described_class.arrival_time('2023-03-02', '23:59', '00:00')
+
+        expect(result).to eq(Time.new(2023, 3, 3, 0, 0))
+      end
+    end
+
+    context 'when arrival and departure times are the same' do
+      it 'returns arrival on the same day' do
+        result = described_class.arrival_time('2023-03-02', '10:00', '10:00')
+
+        expect(result).to eq(Time.new(2023, 3, 2, 10, 0))
+      end
+    end
+  end
+
+  describe '.datetime' do
+    it 'formats a Time as YYYY-MM-DD HH:MM' do
+      result = described_class.datetime(Time.new(2023, 3, 2, 6, 40))
+
+      expect(result).to eq('2023-03-02 06:40')
+    end
+  end
+
+  describe '.date' do
+    it 'formats a Time as YYYY-MM-DD' do
+      result = described_class.date(Time.new(2023, 3, 2, 6, 40))
+
+      expect(result).to eq('2023-03-02')
+    end
+  end
+
+  describe '.time' do
+    it 'formats a Time as HH:MM' do
+      result = described_class.time(Time.new(2023, 3, 2, 6, 40))
+
+      expect(result).to eq('06:40')
+    end
+  end
+
   describe '.hours_difference' do
     context 'when next day but same time' do
       it 'returns 24' do
@@ -17,13 +93,13 @@ RSpec.describe TimeUtils do
     end
 
     context 'when same days but different time' do
-      it 'returns value less than 24' do
-        a = Time.new(2026, 3, 2, 6, 40)
+      it 'returns the exact hour difference' do
+        a = Time.new(2026, 3, 2, 6, 0)
         b = Time.new(2026, 3, 2, 15, 0)
 
         result = described_class.hours_difference(b, a)
 
-        expect(result).to be < 24
+        expect(result).to eq(9)
       end
     end
 

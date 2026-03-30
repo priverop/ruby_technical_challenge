@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'date'
 require 'time'
 
 # Utility methods to work with Time objects.
@@ -17,23 +16,6 @@ module TimeUtils
       return datetime_to_time(date, time) if time
 
       date_to_time(date)
-    end
-
-    # Parses a date-only string into a Time object at midnight.
-    #
-    # @param date [String] date in `YYYY-MM-DD` format.
-    # @return [Time] the parsed time at 00:00.
-    def date_to_time(date)
-      Time.strptime(date, '%Y-%m-%d')
-    end
-
-    # Parses a date and time string into a Time object.
-    #
-    # @param date [String] date in `YYYY-MM-DD` format.
-    # @param time [String] time in `HH:MM` format.
-    # @return [Time] the parsed datetime.
-    def datetime_to_time(date, time)
-      Time.strptime("#{date} #{time}", '%Y-%m-%d %H:%M')
     end
 
     # Calculates the arrival date from a departure date and arrival time.
@@ -73,15 +55,6 @@ module TimeUtils
       datetime.strftime('%H:%M')
     end
 
-    # Returns +true+ if two times has the exact same date.
-    #
-    # @param datetime1 [Time] first time.
-    # @param datetime2 [Time] second time.
-    # @return [Boolean]
-    def same_dates?(datetime1, datetime2)
-      datetime1.to_date == datetime2.to_date
-    end
-
     # Returns the signed difference in hours between two Time objects.
     # A positive result means +next_date+ is later than +previous_date+.
     #
@@ -91,6 +64,25 @@ module TimeUtils
     def hours_difference(next_date, previous_date)
       seconds_difference = next_date - previous_date
       seconds_difference / 3600 # seconds per hour
+    end
+
+    private
+
+    # Parses a date-only string into a Time object at midnight.
+    #
+    # @param date [String] date in `YYYY-MM-DD` format.
+    # @return [Time] the parsed time at 00:00.
+    def date_to_time(date)
+      Time.strptime(date, '%Y-%m-%d')
+    end
+
+    # Parses a date and time string into a Time object.
+    #
+    # @param date [String] date in `YYYY-MM-DD` format.
+    # @param time [String] time in `HH:MM` format.
+    # @return [Time] the parsed datetime.
+    def datetime_to_time(date, time)
+      Time.strptime("#{date} #{time}", '%Y-%m-%d %H:%M')
     end
   end
 end
