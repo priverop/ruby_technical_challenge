@@ -6,6 +6,8 @@ require 'time'
 # Utility methods to work with Time objects.
 module TimeUtils
   class << self
+    NEXT_DAY_SECONDS = 86_400
+
     # Parses a date string with an optional time string into a Time object.
     #
     # @param date [String] date in `YYYY-MM-DD` format.
@@ -32,6 +34,19 @@ module TimeUtils
     # @return [Time] the parsed datetime.
     def datetime_to_time(date, time)
       Time.strptime("#{date} #{time}", '%Y-%m-%d %H:%M')
+    end
+
+    # Calculates the arrival date from a departure date and arrival time.
+    #
+    # @param date_from [String] departure date in `YYYY-MM-DD` format.
+    # @param time_from [String] departure time in `HH:MM` format.
+    # @param time_to [String] arrival time in `HH:MM` format.
+    # @return [Time] the arrival datetime.
+    def arrival_time(date_from, time_from, time_to)
+      departure = datetime_to_time(date_from, time_from)
+      arrival = datetime_to_time(date_from, time_to)
+      arrival += NEXT_DAY_SECONDS if arrival < departure
+      arrival
     end
 
     # Formats a Time as a `YYYY-MM-DD HH:MM` string.

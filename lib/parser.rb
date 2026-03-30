@@ -84,7 +84,7 @@ class Parser
       Segment.new(
         type: type, from: from, to: to,
         datetime_from: TimeUtils.to_time(date_from, time_from),
-        datetime_to: TimeUtils.to_time(date_from, time_to)
+        datetime_to: TimeUtils.arrival_time(date_from, time_from, time_to)
       )
     end
 

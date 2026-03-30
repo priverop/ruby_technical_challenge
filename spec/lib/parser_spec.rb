@@ -85,7 +85,7 @@ RSpec.describe Parser do
       end
     end
 
-    context 'when the input text file is valid and smaller' do
+    context 'when input has just one hotel and two flights' do
       let(:small_input_reservations) do
         <<~TEXT
           RESERVATION
@@ -111,6 +111,18 @@ RSpec.describe Parser do
         ]
 
         result = described_class.parse(small_input_reservations)
+        expect(result).to eq(expected)
+      end
+    end
+
+    context 'when there is an overnight flight' do
+      it 'returns the next day date' do
+        input = 'SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 02:00'
+        expected = [Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                                datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
+                                datetime_to: TimeUtils.to_time('2023-01-06', '02:00'))]
+
+        result = described_class.parse(input)
         expect(result).to eq(expected)
       end
     end
