@@ -19,5 +19,9 @@ end
 input_reservations = ARGV[0]
 
 puts "Itinerary for user based in #{based}:\n\n"
-result = TravelManager.itinerary(input_reservations, based)
-puts result
+begin
+  result = TravelManager.itinerary(input_reservations, based)
+  puts result
+rescue TravelManager::TravelManagerError => e
+  puts "There was an error during the process: #{e.message}"
+end
