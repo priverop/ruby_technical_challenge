@@ -29,7 +29,7 @@ RSpec.describe TravelManager do
     #     expect(result).to eq('there was an error building the trips, please review the input file')
     #   end
     # end
- 
+
     context 'when the input file has wrong segment type' do
       it 'raises SegmentTypeNotCompatibleError exception' do
         file = File.join(fixtures_path, 'wrong_segment.txt')
@@ -46,7 +46,8 @@ RSpec.describe TravelManager do
 
         expect do
           described_class.itinerary(file, 'SVQ')
-        end.to raise_error(TravelManager::TravelManagerError, 'there was an error parsing the reservations, please review the input file')
+        end.to raise_error(TravelManager::TravelManagerError,
+                           'there was an error parsing the reservations, please review the input file')
       end
     end
 
@@ -56,7 +57,8 @@ RSpec.describe TravelManager do
 
         expect do
           described_class.itinerary(file, 'NYC')
-        end.to raise_error(TravelManager::TravelManagerError, 'there was an error building the trips, please review the input file')
+        end.to raise_error(TravelManager::TravelManagerError,
+                           'there was an error building the trips, please review the input file')
       end
     end
 

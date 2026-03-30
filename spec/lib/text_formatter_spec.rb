@@ -21,13 +21,6 @@ RSpec.describe TextFormatter do
                 datetime_to: TimeUtils.to_time('2023-02-17', nil))
   end
 
-  let(:train_generic_travel_text) { 'from MAD to SVQ at 2023-02-17 17:00 to 19:30' }
-  let(:flight_generic_travel_text) { 'from SVQ to BCN at 2023-03-02 06:40 to 09:10' }
-
-  let(:flight_travel_text) { 'Flight from SVQ to BCN at 2023-03-02 06:40 to 09:10' }
-  let(:train_travel_text) { 'Train from MAD to SVQ at 2023-02-17 17:00 to 19:30' }
-  let(:hotel_text) { 'Hotel at MAD on 2023-02-15 to 2023-02-17' }
-
   describe '.trips_to_text' do
     context 'when the trips array is valid' do
       let(:expected_trips_text) do

@@ -4,26 +4,6 @@ require 'spec_helper'
 require 'parser'
 
 RSpec.describe Parser do
-  let(:flight_line) { 'SEGMENT: Flight SVQ 2023-03-02 06:40 -> BCN 09:10' }
-  let(:train_line) { 'SEGMENT: Train MAD 2023-02-17 17:00 -> SVQ 19:30' }
-  let(:hotel_line) { 'SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10' }
-
-  let(:flight_segment) do
-    Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
-                datetime_to: TimeUtils.to_time('2023-03-02', '09:10'))
-  end
-  let(:train_segment) do
-    Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
-                datetime_from: TimeUtils.to_time('2023-02-17', '17:00'),
-                datetime_to: TimeUtils.to_time('2023-02-17', '19:30'))
-  end
-  let(:hotel_segment) do
-    Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
-                datetime_from: TimeUtils.to_time('2023-01-05', nil),
-                datetime_to: TimeUtils.to_time('2023-01-10', nil))
-  end
-
   let(:expected_segments) do
     [
       Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',

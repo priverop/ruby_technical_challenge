@@ -28,7 +28,8 @@ module TravelManager
       unsorted_segments = Parser.parse(input_reservations) # TODO: Rescue exceptions?
 
       if unsorted_segments.empty?
-        raise TravelManager::TravelManagerError, 'there was an error parsing the reservations, please review the input file'
+        raise TravelManager::TravelManagerError,
+              'there was an error parsing the reservations, please review the input file'
       end
 
       sorted_trips = TripBuilder.build(unsorted_segments, based) # TODO: Rescue exceptions?
