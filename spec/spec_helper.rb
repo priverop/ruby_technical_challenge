@@ -16,6 +16,7 @@
 require 'simplecov'
 SimpleCov.profiles.define 'exclude_spec_files' do
   add_filter 'spec' # Don't include spec files
+  track_files 'lib/**/*.rb'
 end
 
 SimpleCov.start 'exclude_spec_files'
@@ -23,6 +24,10 @@ RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
+  config.define_derived_metadata do |meta|
+    meta[:aggregate_failures] = true
+  end
+
   config.expect_with :rspec do |expectations|
     # This option will default to `true` in RSpec 4. It makes the `description`
     # and `failure_message` of custom matchers include text for helper methods
