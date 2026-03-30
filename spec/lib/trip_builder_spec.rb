@@ -161,5 +161,20 @@ RSpec.describe TripBuilder do
         expect(result).to eq([Trip.new('MAD', segments)])
       end
     end
+
+    context 'when same day round trip' do
+      # avoid infinte loop
+      it 'returns the SVQ trip' do
+        segments = [Segment.new(type: 'Flight', from: 'SVQ', to: 'MAD',
+                                datetime_from: TimeUtils.to_time('2023-02-15', '08:00'),
+                                datetime_to: TimeUtils.to_time('2023-02-15', '10:00')),
+                    Segment.new(type: 'Flight', from: 'MAD', to: 'SVQ',
+                                datetime_from: TimeUtils.to_time('2023-02-15', '18:00'),
+                                datetime_to: TimeUtils.to_time('2023-02-15', '20:00'))]
+
+        result = described_class.build(segments, 'SVQ')
+        expect(result).to eq([Trip.new('SVQ', segments)]) # TODO: bug or feature?
+      end
+    end
   end
 end
