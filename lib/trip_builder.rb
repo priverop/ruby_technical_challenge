@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'debug'
 require_relative 'segment'
 require_relative 'time_utils'
 require_relative 'trip'
@@ -51,7 +52,7 @@ class TripBuilder
       sorted = []
       loop do
         sorted.push(previous)
-        next_segment = find_link(unsorted_segments, previous)
+        next_segment = find_link(unsorted_segments - sorted, previous)
         break if next_segment.nil? # no more segments in the trip
 
         previous.is_connection = check_connection?(previous, next_segment)
@@ -67,15 +68,10 @@ class TripBuilder
     # @return [Segment] following segment to the "previous" param.
     def find_link(unsorted_segments, previous)
       unsorted_segments.find do |segment|
-        segment.from == previous.to &&
-          (
-            # Hotel times are 00:00, which messes up with the hour difference
-            TimeUtils.same_dates?(segment.datetime_from, previous.datetime_to) ||
-            (
-              TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to).positive? &&
-              TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to) < CONNECTION_HOURS_LIMIT
-            )
-          )
+        next unless segment.from == previous.to
+
+        segment.datetime_to >= previous.datetime_from &&
+          TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to) < CONNECTION_HOURS_LIMIT
       end
     end
 
