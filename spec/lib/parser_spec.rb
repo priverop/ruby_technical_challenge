@@ -209,6 +209,33 @@ RSpec.describe Parser do
       end
     end
 
+    context 'when the input text file has empty segment line' do
+      let(:input_reservations) do
+        <<~TEXT
+          RESERVATION
+          SEGMENT:
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          SEGMENT: Flight BCN 2023-01-10 10:30 -> SVQ 11:50
+        TEXT
+      end
+
+      it 'ignored the hotel line and returns array of flight Segments' do
+        expected = [
+          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
+          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+        ]
+
+        result = described_class.parse(input_reservations)
+        expect(result).to eq(expected)
+      end
+    end
+
     context 'when the input is nil' do
       it 'returns empty array' do
         result = described_class.parse(nil)
@@ -246,95 +273,6 @@ RSpec.describe Parser do
         result = described_class.parse("RESERVATION \n\n \n \n \n")
 
         expect(result).to eq([])
-      end
-    end
-  end
-
-  describe '.segment' do # TODO: redo with the new send
-    context 'when the text line has flight type' do
-      it 'delegates to trip_segment' do
-        allow(described_class).to receive(:flight_segment).with(flight_line).and_return(flight_segment)
-        result = described_class.send(:segment, flight_line)
-
-        expect(result).to eq(flight_segment)
-      end
-    end
-
-    context 'when the text line has train type' do
-      it 'delegates to trip_segment' do
-        allow(described_class).to receive(:train_segment).with(train_line).and_return(train_segment)
-        result = described_class.send(:segment, train_line)
-
-        expect(result).to eq(train_segment)
-      end
-    end
-
-    context 'when the text line has hotel type' do
-      it 'delegates to hotel_segment' do
-        allow(described_class).to receive(:hotel_segment).with(hotel_line).and_return(hotel_segment)
-        result = described_class.send(:segment, hotel_line)
-
-        expect(result).to eq(hotel_segment)
-      end
-    end
-
-    context 'when the text line has no SEGMENT: part' do
-      it 'returns nil' do
-        result = described_class.send(:segment, 'Train MAD 2023-02-17 17:00 -> SVQ 19:30')
-
-        expect(result).to be_nil
-      end
-    end
-
-    context 'when the text line has SEGMENT: but the rest is empty' do
-      it 'returns nil' do
-        result = described_class.send(:segment, 'SEGMENT: ')
-
-        expect(result).to be_nil
-      end
-    end
-  end
-
-  describe '.trip_segment' do
-    context 'when flight line matches the pattern' do
-      it 'returns a valid Segment type Flight' do
-        result = described_class.send(:trip_segment, flight_line)
-
-        expect(result).to eq(flight_segment)
-      end
-    end
-
-    context 'when train line matches the pattern' do
-      it 'returns a valid Segment type Train' do
-        result = described_class.send(:trip_segment, train_line)
-
-        expect(result).to eq(train_segment)
-      end
-    end
-
-    context 'when the line doesn\'t match the pattern' do
-      it 'return nil' do
-        result = described_class.send(:trip_segment, hotel_line)
-
-        expect(result).to be_nil
-      end
-    end
-  end
-
-  describe '.hotel_segment' do
-    context 'when hotel line matches the pattern' do
-      it 'returns a valid Segment of type Hotel' do
-        result = described_class.send(:hotel_segment, hotel_line)
-
-        expect(result).to eq(hotel_segment)
-      end
-    end
-
-    context 'when the line doesn\'t match the pattern' do
-      it 'return nil' do
-        result = described_class.send(:hotel_segment, flight_line)
-
-        expect(result).to be_nil
       end
     end
   end
