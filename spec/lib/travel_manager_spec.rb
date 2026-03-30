@@ -19,6 +19,7 @@ RSpec.describe TravelManager do
       end
     end
 
+    # TODO: fix
     # context 'with valid input file, and wrong based' do
     #   it 'returns ERROR message' do
     #     based = 'SVG'
@@ -28,6 +29,36 @@ RSpec.describe TravelManager do
     #     expect(result).to eq('there was an error building the trips, please review the input file')
     #   end
     # end
+ 
+    context 'when the input file has wrong segment type' do
+      it 'raises SegmentTypeNotCompatibleError exception' do
+        file = File.join(fixtures_path, 'wrong_segment.txt')
+
+        expect do
+          described_class.itinerary(file, 'SVQ')
+        end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: BCN')
+      end
+    end
+
+    context 'when the input file has every line wrong and the parser returns an empty array' do
+      it 'raises TravelManagerError exception' do
+        file = File.join(fixtures_path, 'wrong_parse.txt')
+
+        expect do
+          described_class.itinerary(file, 'SVQ')
+        end.to raise_error(TravelManager::TravelManagerError, 'there was an error parsing the reservations, please review the input file')
+      end
+    end
+
+    context 'when the input file has no trips from the based location' do
+      it 'raises TravelManagerError exception' do
+        file = File.join(fixtures_path, 'valid_input.txt')
+
+        expect do
+          described_class.itinerary(file, 'NYC')
+        end.to raise_error(TravelManager::TravelManagerError, 'there was an error building the trips, please review the input file')
+      end
+    end
 
     context 'with empty based' do
       it 'returns exception' do

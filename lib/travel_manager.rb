@@ -25,23 +25,19 @@ module TravelManager
 
       input_reservations = FileReader.read(input_file)
 
-      unsorted_segments = Parser.parse(input_reservations)
+      unsorted_segments = Parser.parse(input_reservations) # TODO: Rescue exceptions?
 
       if unsorted_segments.empty?
         raise TravelManager::TravelManagerError, 'there was an error parsing the reservations, please review the input file'
       end
 
-      sorted_trips = TripBuilder.build(unsorted_segments, based)
+      sorted_trips = TripBuilder.build(unsorted_segments, based) # TODO: Rescue exceptions?
 
       if sorted_trips.nil? || sorted_trips.empty?
         raise TravelManager::TravelManagerError, 'there was an error building the trips, please review the input file'
       end
 
-      sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips)
-
-      if sorted_trip_texts.nil? || sorted_trip_texts.empty?
-        raise TravelManager::TravelManagerError, 'there was an error formatting the trips, please review the input file'
-      end
+      sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips) # TODO: Rescue exceptions?
 
       build_itinerary(sorted_trip_texts)
     end
