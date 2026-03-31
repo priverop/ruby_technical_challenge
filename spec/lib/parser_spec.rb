@@ -65,6 +65,7 @@ RSpec.describe Parser do
       end
     end
 
+    # Just a smaller input, easier to debug
     context 'when input has just one hotel and two flights' do
       let(:small_input_reservations) do
         <<~TEXT
@@ -227,6 +228,58 @@ RSpec.describe Parser do
         expect(result).to eq(expected)
       end
     end
+
+    context 'when input has Windows OS line endings \r\n' do
+      let(:input_reservations) do
+        <<~TEXT
+          RESERVATION
+          SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          SEGMENT: Flight BCN 2023-01-10 10:30 -> SVQ 11:50
+        TEXT
+      end
+
+      it 'returns array of valid Segments' do
+        expected = [
+          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TimeUtils.to_time('2023-01-10', nil)),
+          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
+          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+        ]
+
+        result = described_class.parse(input_reservations.gsub("\n", "\r\n"))
+        expect(result).to eq(expected)
+      end
+    end
+
+    # rubocop:disable Layout/TrailingWhitespace, Layout/HeredocIndentation
+    context 'when input lines have extra spaces' do
+      let(:input_reservations) do
+        <<~TEXT
+              RESERVATION    
+            SEGMENT: Hotel BCN 2023-01-05 -> 2023-01-10    
+        TEXT
+      end
+
+      it 'returns array of valid Segments' do
+        expected = [
+          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TimeUtils.to_time('2023-01-10', nil))
+        ]
+
+        result = described_class.parse(input_reservations)
+        expect(result).to eq(expected)
+      end
+    end
+    # rubocop:enable Layout/TrailingWhitespace, Layout/HeredocIndentation
 
     context 'when the input is nil' do
       it 'returns empty array' do
