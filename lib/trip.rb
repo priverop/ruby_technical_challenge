@@ -13,12 +13,4 @@ class Trip
     @destination = destination
     @sorted_segments = sorted_segments
   end
-
-  def ==(other)
-    return false unless other.is_a?(Trip)
-
-    destination == other.destination &&
-      sorted_segments.size == other.sorted_segments.size &&
-      sorted_segments.map(&:attributes) == other.sorted_segments.map(&:attributes)
-  end
 end
