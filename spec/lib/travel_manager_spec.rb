@@ -19,16 +19,15 @@ RSpec.describe TravelManager do
       end
     end
 
-    # TODO: fix
-    # context 'with valid input file, and wrong based' do
-    #   it 'returns ERROR message' do
-    #     based = 'SVG'
+    context 'with valid input file, and based not found' do
+      it 'raises TravelManagerError exception' do
+        based = 'ASD'
 
-    #     result = described_class.itinerary(input_file, based)
-
-    #     expect(result).to eq('there was an error building the trips, please review the input file')
-    #   end
-    # end
+        expect do
+          described_class.itinerary(input_file, based)
+        end.to raise_error(TravelManager::TravelManagerError, 'there was an error building the trips, please review the input file')
+      end
+    end
 
     context 'when the input file has wrong segment type' do
       it 'raises SegmentTypeNotCompatibleError exception' do
