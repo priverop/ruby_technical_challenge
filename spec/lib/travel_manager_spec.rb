@@ -67,7 +67,7 @@ RSpec.describe TravelManager do
 
         expect do
           described_class.itinerary(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string")
+        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe TravelManager do
 
         expect do
           described_class.itinerary(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string")
+        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
 
@@ -87,7 +87,7 @@ RSpec.describe TravelManager do
 
         expect do
           described_class.itinerary(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string")
+        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
 
@@ -97,7 +97,7 @@ RSpec.describe TravelManager do
 
         expect do
           described_class.itinerary(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "#{based} should be a three-letter uppercase string")
+        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
   end
