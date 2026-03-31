@@ -13,6 +13,7 @@
 # it.
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require_relative 'support/segment_matchers'
 require 'simplecov'
 SimpleCov.profiles.define 'exclude_spec_files' do
   add_filter 'spec' # Don't include spec files

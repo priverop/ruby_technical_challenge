@@ -63,7 +63,7 @@ RSpec.describe TravelManager::Parser do
 
       it 'returns array of valid Segments' do
         result = described_class.parse(input_reservations)
-        expect(result).to eq(expected_segments)
+        expect(result).to match_segments(expected_segments)
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe TravelManager::Parser do
         ]
 
         result = described_class.parse(small_input_reservations)
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
 
@@ -106,7 +106,7 @@ RSpec.describe TravelManager::Parser do
                                 datetime_to: TravelManager::TimeUtils.to_time('2023-01-06', '02:00'))]
 
         result = described_class.parse(input)
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
 
@@ -133,7 +133,7 @@ RSpec.describe TravelManager::Parser do
         ]
 
         result = described_class.parse(input_reservations)
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
 
@@ -157,7 +157,7 @@ RSpec.describe TravelManager::Parser do
         ]
 
         result = described_class.parse(input_reservations)
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
 
@@ -181,7 +181,7 @@ RSpec.describe TravelManager::Parser do
         ]
 
         result = described_class.parse(input_reservations)
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
 
@@ -227,7 +227,7 @@ RSpec.describe TravelManager::Parser do
         ]
 
         result = described_class.parse(input_reservations)
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe TravelManager::Parser do
         ]
 
         result = described_class.parse(input_reservations.gsub("\n", "\r\n"))
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
 
@@ -278,7 +278,7 @@ RSpec.describe TravelManager::Parser do
         ]
 
         result = described_class.parse(input_reservations)
-        expect(result).to eq(expected)
+        expect(result).to match_segments(expected)
       end
     end
     # rubocop:enable Layout/TrailingWhitespace, Layout/HeredocIndentation
