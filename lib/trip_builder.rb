@@ -71,7 +71,7 @@ class TripBuilder
         next unless segment.from == previous.to
 
         segment.datetime_to >= previous.datetime_from &&
-          TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to) < CONNECTION_HOURS_LIMIT
+          TimeUtils.hours_difference(segment.datetime_from, previous.datetime_to) <= CONNECTION_HOURS_LIMIT
       end
     end
 
@@ -84,7 +84,7 @@ class TripBuilder
     def check_connection?(previous, next_segment)
       if next_segment.flight? && previous.flight? &&
          next_segment != previous &&
-         TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) < CONNECTION_HOURS_LIMIT
+         TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) <= CONNECTION_HOURS_LIMIT
         return true
       end
 

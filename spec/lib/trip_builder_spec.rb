@@ -35,7 +35,7 @@ RSpec.describe TripBuilder do
 
   describe '.build' do
     context 'when passing valid segments' do
-      it 'returns a valid array of Trips' do # TODO: assert everything? decompose?
+      it 'returns a valid array of Trips' do
         result = described_class.build(unsorted_segments, 'SVQ')
 
         expect(result.count).to eq(3)
@@ -108,7 +108,7 @@ RSpec.describe TripBuilder do
       end
     end
 
-    context 'when passing single segment' do # TODO: remove?
+    context 'when passing single segment' do
       it 'returns the segment' do
         segments = [Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
                                 datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
@@ -147,6 +147,20 @@ RSpec.describe TripBuilder do
       end
     end
 
+    context 'when the segments are exactly 24.0h appart' do
+      it 'behaves as <24h (connection flights)' do
+        segments = [Segment.new(type: 'Flight', from: 'SVQ', to: 'MAD',
+                                datetime_from: TimeUtils.to_time('2023-02-15', '15:00'),
+                                datetime_to: TimeUtils.to_time('2023-02-15', '18:10')),
+                    Segment.new(type: 'Flight', from: 'MAD', to: 'SVQ',
+                                datetime_from: TimeUtils.to_time('2023-02-16', '18:10'),
+                                datetime_to: TimeUtils.to_time('2023-02-17', '19:30'))]
+
+        result = described_class.build(segments, 'SVQ')
+        expect(result).to eq([Trip.new('SVQ', segments)])
+      end
+    end
+
     # requirements say only two flights can be considered connections
     context 'when there is a connection travel, but its not a flight' do
       it 'returns the correct next segment' do
@@ -173,7 +187,28 @@ RSpec.describe TripBuilder do
                                 datetime_to: TimeUtils.to_time('2023-02-15', '20:00'))]
 
         result = described_class.build(segments, 'SVQ')
-        expect(result).to eq([Trip.new('SVQ', segments)]) # TODO: bug or feature?
+        expect(result).to eq([Trip.new('SVQ', segments)])
+      end
+    end
+
+    context 'when multiple connection flights' do
+      it 'returns the right destination' do
+        segments = [
+          Segment.new(type: 'Flight', from: 'NYC', to: 'JFK',
+                      datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
+                      datetime_to: TimeUtils.to_time('2023-03-02', '09:10')),
+          Segment.new(type: 'Flight', from: 'JFK', to: 'ORD',
+                      datetime_from: TimeUtils.to_time('2023-03-02', '11:00'),
+                      datetime_to: TimeUtils.to_time('2023-03-02', '13:00')),
+          Segment.new(type: 'Flight', from: 'ORD', to: 'LAX',
+                      datetime_from: TimeUtils.to_time('2023-03-02', '15:00'),
+                      datetime_to: TimeUtils.to_time('2023-03-02', '17:45'))
+        ]
+
+        expected_destination = 'LAX'
+
+        result = described_class.build(segments, 'NYC')
+        expect(result).to eq([Trip.new(expected_destination, segments)])
       end
     end
   end
