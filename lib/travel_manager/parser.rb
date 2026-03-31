@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require_relative 'segment'
 require_relative 'time_utils'
 
@@ -44,7 +43,10 @@ module TravelManager
         pattern = TEXT_PATTERNS[:generic_segment_pattern]
         matcher = line.match(pattern)
 
-        return unless matcher
+        if matcher.nil?
+          TravelManager.logger&.warn "SEGMENT pattern not found, ignoring line: #{line}"
+          return
+        end
 
         type = matcher.captures.first
         method_name = "#{type.downcase}_segment"
@@ -80,7 +82,12 @@ module TravelManager
         pattern = TEXT_PATTERNS[:trip_segment_pattern]
         matcher = trip_line.match(pattern)
 
-        return unless matcher
+        if matcher.nil?
+          TravelManager.logger&.warn 'Invalid Flight/Train format, ignoring line. Expected ' \
+                                     "'SEGMENT: Type FROM DEPARTURE_DATE DEPARTURE_TIME -> TO ARRIVAL_TIME'" \
+                                     ", got #{trip_line}.\n"
+          return
+        end
 
         type, from, date_from, time_from, to, time_to = matcher.captures
         Segment.new(
@@ -98,7 +105,11 @@ module TravelManager
         pattern = TEXT_PATTERNS[:hotel_segment_pattern]
         matcher = hotel_line.match(pattern)
 
-        return unless matcher
+        if matcher.nil?
+          TravelManager.logger&.warn 'Invalid Hotel format, ignoring line.' \
+                                     "Expected 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO', got #{trip_line}.\n"
+          return
+        end
 
         type, from, date_from, date_to = matcher.captures
         Segment.new(
