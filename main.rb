@@ -3,6 +3,9 @@
 require 'bundler/setup'
 require_relative 'lib/travel_manager'
 
+TravelManager.logger = Logger.new($stderr)
+TravelManager.logger.level = Logger::WARN
+
 if ARGV.length != 1
   warn 'Wrong number of arguments. Usage: BASED=SVQ main.rb input.txt'
   exit 0
@@ -11,7 +14,8 @@ end
 based = ENV.fetch('BASED', nil)
 
 if based.nil? || based.to_s.empty?
-  warn 'Please specify where you are based using the BASED env variable. Usage: BASED=SVQ main.rb input.txt'
+  warn 'Please specify where you are based using the BASED env variable.' \
+       'Usage: BASED=SVQ bundle exec ruby main.rb input.txt'
   exit 1
 end
 

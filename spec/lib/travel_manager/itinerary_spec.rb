@@ -27,7 +27,7 @@ RSpec.describe TravelManager::Itinerary do
         expect do
           described_class.generate(input_file, based)
         end.to raise_error(TravelManager::TravelManagerError,
-                           'there was an error building the trips, please review the input file')
+                           'No segments from ASD found.')
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe TravelManager::Itinerary do
         expect do
           described_class.generate(file, 'SVQ')
         end.to raise_error(TravelManager::TravelManagerError,
-                           'there was an error parsing the reservations, please review the input file')
+                           "#{file} could not be parsed. Please review the logs.")
       end
     end
 
@@ -59,7 +59,7 @@ RSpec.describe TravelManager::Itinerary do
         expect do
           described_class.generate(file, 'NYC')
         end.to raise_error(TravelManager::TravelManagerError,
-                           'there was an error building the trips, please review the input file')
+                           'No segments from NYC found.')
       end
     end
 
