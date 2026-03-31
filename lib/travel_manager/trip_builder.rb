@@ -82,8 +82,8 @@ module TravelManager
       # @return [Boolean] true if conditions are met.
       def check_connection?(previous, next_segment)
         if next_segment.flight? && previous.flight? &&
-          next_segment != previous &&
-          TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) <= CONNECTION_HOURS_LIMIT
+           next_segment != previous &&
+           TimeUtils.hours_difference(next_segment.datetime_from, previous.datetime_to) <= CONNECTION_HOURS_LIMIT
           return true
         end
 

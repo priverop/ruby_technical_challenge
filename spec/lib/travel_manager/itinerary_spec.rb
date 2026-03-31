@@ -26,7 +26,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::TravelManagerError, 'there was an error building the trips, please review the input file')
+        end.to raise_error(TravelManager::TravelManagerError,
+                           'there was an error building the trips, please review the input file')
       end
     end
 
@@ -68,7 +69,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::ArgumentError,
+                           "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
 
@@ -78,7 +80,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::ArgumentError,
+                           "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
 
@@ -88,7 +91,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::ArgumentError,
+                           "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
 
@@ -98,7 +102,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::ArgumentError,
+                           "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
   end

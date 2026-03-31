@@ -15,11 +15,8 @@ RSpec/ExampleLength:
   CountAsOne: "hash"
   Max: 15 # the default is 5, wow. If the test is readable...
 
-# I don't quite understand the logic of this rule.
-# It's true that sometimes we should be splitting tests, but I see nothing wrong with multiple expectations for the same test.
+# This rule is to enforce single expectation tests: https://www.betterspecs.org/#single
+# From my experience, this creates more issues that it solves. Making spec files super long and repetitive.
+# I added global aggregate_failures so we get the full list of errors instead of only the first one.
 RSpec/MultipleExpectations:
-  Enabled: false
-
-# Another rule I don't understand.
-RSpec/MultipleMemoizedHelpers:
   Enabled: false

@@ -8,18 +8,18 @@ require 'travel_manager/time_utils'
 RSpec.describe TravelManager::TextFormatter do
   let(:flight_segment) do
     TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
-                datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10'))
+                               datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
+                               datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10'))
   end
   let(:train_segment) do
     TravelManager::Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
-                datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
-                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))
+                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
+                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))
   end
   let(:hotel_segment) do
     TravelManager::Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
-                datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', nil),
-                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', nil))
+                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', nil),
+                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', nil))
   end
 
   describe '.trips_to_text' do

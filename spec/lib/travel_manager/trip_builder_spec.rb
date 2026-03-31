@@ -9,36 +9,36 @@ RSpec.describe TravelManager::TripBuilder do
   let(:unsorted_segments) do
     [
       TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')),
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')),
       TravelManager::Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', nil),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', nil)),
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', nil),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', nil)),
       TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
       TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50')),
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50')),
       TravelManager::Segment.new(type: 'Train', from: 'SVQ', to: 'MAD',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '9:30'),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '11:00')),
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '9:30'),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '11:00')),
       TravelManager::Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30')),
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30')),
       TravelManager::Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', nil),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', nil)),
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', nil),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', nil)),
       TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'NYC',
-                  datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '15:00'),
-                  datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '22:45'))
+                                 datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '15:00'),
+                                 datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '22:45'))
     ]
   end
 
   let(:overnight_flight) do
     TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'MAD',
-                datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '15:00'),
-                datetime_to: TravelManager::TimeUtils.to_time('2023-02-16', '18:10'))
+                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '15:00'),
+                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-16', '18:10'))
   end
 
   describe '.build' do
@@ -93,17 +93,17 @@ RSpec.describe TravelManager::TripBuilder do
 
         unsorted_segments = [
           TravelManager::Segment.new(type: 'Flight', from: 'NYC', to: 'LAX',
-                      datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
-                      datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')),
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')),
           TravelManager::Segment.new(type: 'Hotel', from: 'LAX', to: 'NYC',
-                      datetime_from: TravelManager::TimeUtils.to_time('2023-03-05', '09:00'),
-                      datetime_to: TravelManager::TimeUtils.to_time('2023-03-05', '12:00')),
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-03-05', '09:00'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-03-05', '12:00')),
           TravelManager::Segment.new(type: 'Flight', from: 'NYC', to: 'JFK',
-                      datetime_from: TravelManager::TimeUtils.to_time('2023-06-02', '15:00'),
-                      datetime_to: TravelManager::TimeUtils.to_time('2023-06-02', '22:45')),
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-06-02', '15:00'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-06-02', '22:45')),
           TravelManager::Segment.new(type: 'Flight', from: 'JFK', to: 'NYC',
-                      datetime_from: TravelManager::TimeUtils.to_time('2023-06-04', '15:00'),
-                      datetime_to: TravelManager::TimeUtils.to_time('2023-06-04', '22:45'))
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-06-04', '15:00'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-06-04', '22:45'))
         ]
 
         result = described_class.build(unsorted_segments, based)
@@ -113,7 +113,7 @@ RSpec.describe TravelManager::TripBuilder do
         expect(result.first.sorted_segments.first).to have_attributes(
           type: 'Flight', from: 'NYC', to: 'LAX',
           datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
-          datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10'),
+          datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')
         )
         expect(result.last.destination).to eq('JFK')
         expect(result.last.sorted_segments.first).to have_attributes(
@@ -127,8 +127,8 @@ RSpec.describe TravelManager::TripBuilder do
     context 'when passing single segment' do
       it 'returns the segment' do
         segments = [TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10'))]
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10'))]
 
         result = described_class.build(segments, 'SVQ')
 
@@ -146,8 +146,8 @@ RSpec.describe TravelManager::TripBuilder do
       it 'returns the trip destination to SVQ' do
         segments = [overnight_flight,
                     TravelManager::Segment.new(type: 'Flight', from: 'MAD', to: 'SVQ',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
 
         result = described_class.build(segments, 'SVQ')
 
@@ -169,8 +169,8 @@ RSpec.describe TravelManager::TripBuilder do
       it 'returns the trip destination to MAD' do
         segments = [overnight_flight,
                     TravelManager::Segment.new(type: 'Flight', from: 'MAD', to: 'SVQ',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '18:20'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '18:20'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
 
         result = described_class.build(segments, 'SVQ')
 
@@ -187,11 +187,11 @@ RSpec.describe TravelManager::TripBuilder do
     context 'when the segments are exactly 24.0h appart' do
       it 'behaves as <24h (connection flights)' do
         segments = [TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'MAD',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '15:00'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '18:10')),
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '15:00'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '18:10')),
                     TravelManager::Segment.new(type: 'Flight', from: 'MAD', to: 'SVQ',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-02-16', '18:10'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-16', '18:10'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
 
         result = described_class.build(segments, 'SVQ')
 
@@ -214,8 +214,8 @@ RSpec.describe TravelManager::TripBuilder do
       it 'returns the correct next segment' do
         segments = [overnight_flight,
                     TravelManager::Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))]
 
         result = described_class.build(segments, 'SVQ')
 
@@ -237,11 +237,11 @@ RSpec.describe TravelManager::TripBuilder do
       # avoid infinte loop
       it 'returns the SVQ trip' do
         segments = [TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'MAD',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '08:00'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '10:00')),
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '08:00'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '10:00')),
                     TravelManager::Segment.new(type: 'Flight', from: 'MAD', to: 'SVQ',
-                                datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '18:00'),
-                                datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '20:00'))]
+                                               datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '18:00'),
+                                               datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '20:00'))]
 
         result = described_class.build(segments, 'SVQ')
 
@@ -263,14 +263,14 @@ RSpec.describe TravelManager::TripBuilder do
       it 'returns the right destination' do
         segments = [
           TravelManager::Segment.new(type: 'Flight', from: 'NYC', to: 'JFK',
-                      datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
-                      datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')),
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')),
           TravelManager::Segment.new(type: 'Flight', from: 'JFK', to: 'ORD',
-                      datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '11:00'),
-                      datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '13:00')),
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '11:00'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '13:00')),
           TravelManager::Segment.new(type: 'Flight', from: 'ORD', to: 'LAX',
-                      datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '15:00'),
-                      datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '17:45'))
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '15:00'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '17:45'))
         ]
 
         result = described_class.build(segments, 'NYC')
