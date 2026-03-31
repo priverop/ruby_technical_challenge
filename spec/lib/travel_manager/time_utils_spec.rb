@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'time_utils'
+require 'travel_manager'
+require 'travel_manager/time_utils'
 
-RSpec.describe TimeUtils do
+RSpec.describe TravelManager::TimeUtils do
   describe '.to_time' do
     context 'when date and time are present' do
       it 'returns a Time with date and time' do

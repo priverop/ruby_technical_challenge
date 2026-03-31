@@ -2,18 +2,19 @@
 
 require 'spec_helper'
 require 'travel_manager'
+require 'travel_manager/itinerary'
 
-RSpec.describe TravelManager do
-  let(:fixtures_path) { File.join(File.expand_path('../', __dir__), 'fixtures') }
+RSpec.describe TravelManager::Itinerary do
+  let(:fixtures_path) { File.join(File.expand_path('../../', __dir__), 'fixtures') }
   let(:input_file) { File.join(fixtures_path, 'valid_input.txt') }
   let(:output_file) { File.read(File.join(fixtures_path, 'valid_output.txt')) }
 
-  describe '.itinerary' do
+  describe '.generate' do
     context 'with valid input file and based' do
       it 'returns the right itineraries' do
         based = 'SVQ'
 
-        result = described_class.itinerary(input_file, based)
+        result = described_class.generate(input_file, based)
 
         expect(result).to match(output_file)
       end
@@ -24,7 +25,7 @@ RSpec.describe TravelManager do
         based = 'ASD'
 
         expect do
-          described_class.itinerary(input_file, based)
+          described_class.generate(input_file, based)
         end.to raise_error(TravelManager::TravelManagerError, 'there was an error building the trips, please review the input file')
       end
     end
@@ -34,7 +35,7 @@ RSpec.describe TravelManager do
         file = File.join(fixtures_path, 'wrong_segment.txt')
 
         expect do
-          described_class.itinerary(file, 'SVQ')
+          described_class.generate(file, 'SVQ')
         end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: BCN')
       end
     end
@@ -44,7 +45,7 @@ RSpec.describe TravelManager do
         file = File.join(fixtures_path, 'wrong_parse.txt')
 
         expect do
-          described_class.itinerary(file, 'SVQ')
+          described_class.generate(file, 'SVQ')
         end.to raise_error(TravelManager::TravelManagerError,
                            'there was an error parsing the reservations, please review the input file')
       end
@@ -55,7 +56,7 @@ RSpec.describe TravelManager do
         file = File.join(fixtures_path, 'valid_input.txt')
 
         expect do
-          described_class.itinerary(file, 'NYC')
+          described_class.generate(file, 'NYC')
         end.to raise_error(TravelManager::TravelManagerError,
                            'there was an error building the trips, please review the input file')
       end
@@ -66,7 +67,7 @@ RSpec.describe TravelManager do
         based = ''
 
         expect do
-          described_class.itinerary(input_file, based)
+          described_class.generate(input_file, based)
         end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
@@ -76,7 +77,7 @@ RSpec.describe TravelManager do
         based = 'MA'
 
         expect do
-          described_class.itinerary(input_file, based)
+          described_class.generate(input_file, based)
         end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
@@ -86,7 +87,7 @@ RSpec.describe TravelManager do
         based = 'Bcn'
 
         expect do
-          described_class.itinerary(input_file, based)
+          described_class.generate(input_file, based)
         end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end
@@ -96,7 +97,7 @@ RSpec.describe TravelManager do
         based = 123
 
         expect do
-          described_class.itinerary(input_file, based)
+          described_class.generate(input_file, based)
         end.to raise_error(TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string.")
       end
     end

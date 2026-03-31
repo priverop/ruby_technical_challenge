@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'file_reader'
+require 'travel_manager'
+require 'travel_manager/file_reader'
 
-RSpec.describe FileReader do
-  let(:fixtures_path) { File.join(File.expand_path('../', __dir__), 'fixtures') }
+RSpec.describe TravelManager::FileReader do
+  let(:fixtures_path) { File.join(File.expand_path('../../', __dir__), 'fixtures') }
 
   describe '.read' do
     context 'when the file exists' do

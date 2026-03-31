@@ -1,35 +1,37 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'parser'
+require 'travel_manager'
+require 'travel_manager/parser'
+require 'travel_manager/segment'
 
-RSpec.describe Parser do
+RSpec.describe TravelManager::Parser do
   let(:expected_segments) do
     [
-      Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                  datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
-                  datetime_to: TimeUtils.to_time('2023-03-02', '09:10')),
-      Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
-                  datetime_from: TimeUtils.to_time('2023-01-05', nil),
-                  datetime_to: TimeUtils.to_time('2023-01-10', nil)),
-      Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                  datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
-                  datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
-      Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
-                  datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
-                  datetime_to: TimeUtils.to_time('2023-01-10', '11:50')),
-      Segment.new(type: 'Train', from: 'SVQ', to: 'MAD',
-                  datetime_from: TimeUtils.to_time('2023-02-15', '9:30'),
-                  datetime_to: TimeUtils.to_time('2023-02-15', '11:00')),
-      Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
-                  datetime_from: TimeUtils.to_time('2023-02-17', '17:00'),
-                  datetime_to: TimeUtils.to_time('2023-02-17', '19:30')),
-      Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
-                  datetime_from: TimeUtils.to_time('2023-02-15', nil),
-                  datetime_to: TimeUtils.to_time('2023-02-17', nil)),
-      Segment.new(type: 'Flight', from: 'BCN', to: 'NYC',
-                  datetime_from: TimeUtils.to_time('2023-03-02', '15:00'),
-                  datetime_to: TimeUtils.to_time('2023-03-02', '22:45'))
+      TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10')),
+      TravelManager::Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', nil),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', nil)),
+      TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+      TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50')),
+      TravelManager::Segment.new(type: 'Train', from: 'SVQ', to: 'MAD',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', '9:30'),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-02-15', '11:00')),
+      TravelManager::Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30')),
+      TravelManager::Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', nil),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', nil)),
+      TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'NYC',
+                  datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '15:00'),
+                  datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '22:45'))
     ]
   end
 
@@ -80,15 +82,15 @@ RSpec.describe Parser do
 
       it 'returns array of valid Segments' do
         expected = [
-          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
-                      datetime_to: TimeUtils.to_time('2023-01-10', nil)),
-          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
-                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
-          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
-                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
-                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+          TravelManager::Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', nil)),
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+          TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50'))
         ]
 
         result = described_class.parse(small_input_reservations)
@@ -99,9 +101,9 @@ RSpec.describe Parser do
     context 'when there is an overnight flight' do
       it 'returns the next day date' do
         input = 'SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 02:00'
-        expected = [Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                                datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
-                                datetime_to: TimeUtils.to_time('2023-01-06', '02:00'))]
+        expected = [TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                                datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                datetime_to: TravelManager::TimeUtils.to_time('2023-01-06', '02:00'))]
 
         result = described_class.parse(input)
         expect(result).to eq(expected)
@@ -122,12 +124,12 @@ RSpec.describe Parser do
 
       it 'ignored the hotel line and returns array of flight Segments' do
         expected = [
-          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
-                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
-          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
-                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
-                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+          TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50'))
         ]
 
         result = described_class.parse(input_reservations)
@@ -149,9 +151,9 @@ RSpec.describe Parser do
 
       it 'ignores the fligh lines and returns hotel Segments' do
         expected = [
-          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
-                      datetime_to: TimeUtils.to_time('2023-01-10', nil))
+          TravelManager::Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', nil))
         ]
 
         result = described_class.parse(input_reservations)
@@ -173,9 +175,9 @@ RSpec.describe Parser do
 
       it 'ignores hotel and flight and returns array of the train Segments' do
         expected = [
-          Segment.new(type: 'Train', from: 'BCN', to: 'SVQ',
-                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
-                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+          TravelManager::Segment.new(type: 'Train', from: 'BCN', to: 'SVQ',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50'))
         ]
 
         result = described_class.parse(input_reservations)
@@ -216,12 +218,12 @@ RSpec.describe Parser do
 
       it 'ignored the hotel line and returns array of flight Segments' do
         expected = [
-          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
-                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
-          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
-                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
-                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+          TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50'))
         ]
 
         result = described_class.parse(input_reservations)
@@ -243,15 +245,15 @@ RSpec.describe Parser do
 
       it 'returns array of valid Segments' do
         expected = [
-          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
-                      datetime_to: TimeUtils.to_time('2023-01-10', nil)),
-          Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', '20:40'),
-                      datetime_to: TimeUtils.to_time('2023-01-05', '22:10')),
-          Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
-                      datetime_from: TimeUtils.to_time('2023-01-10', '10:30'),
-                      datetime_to: TimeUtils.to_time('2023-01-10', '11:50'))
+          TravelManager::Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', nil)),
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+          TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50'))
         ]
 
         result = described_class.parse(input_reservations.gsub("\n", "\r\n"))
@@ -270,9 +272,9 @@ RSpec.describe Parser do
 
       it 'returns array of valid Segments' do
         expected = [
-          Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
-                      datetime_from: TimeUtils.to_time('2023-01-05', nil),
-                      datetime_to: TimeUtils.to_time('2023-01-10', nil))
+          TravelManager::Segment.new(type: 'Hotel', from: 'BCN', to: 'BCN',
+                      datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', nil),
+                      datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', nil))
         ]
 
         result = described_class.parse(input_reservations)

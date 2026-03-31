@@ -1,24 +1,25 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'text_formatter'
-require 'time_utils'
+require 'travel_manager'
+require 'travel_manager/text_formatter'
+require 'travel_manager/time_utils'
 
-RSpec.describe TextFormatter do
+RSpec.describe TravelManager::TextFormatter do
   let(:flight_segment) do
-    Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                datetime_from: TimeUtils.to_time('2023-03-02', '06:40'),
-                datetime_to: TimeUtils.to_time('2023-03-02', '09:10'))
+    TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                datetime_from: TravelManager::TimeUtils.to_time('2023-03-02', '06:40'),
+                datetime_to: TravelManager::TimeUtils.to_time('2023-03-02', '09:10'))
   end
   let(:train_segment) do
-    Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
-                datetime_from: TimeUtils.to_time('2023-02-17', '17:00'),
-                datetime_to: TimeUtils.to_time('2023-02-17', '19:30'))
+    TravelManager::Segment.new(type: 'Train', from: 'MAD', to: 'SVQ',
+                datetime_from: TravelManager::TimeUtils.to_time('2023-02-17', '17:00'),
+                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', '19:30'))
   end
   let(:hotel_segment) do
-    Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
-                datetime_from: TimeUtils.to_time('2023-02-15', nil),
-                datetime_to: TimeUtils.to_time('2023-02-17', nil))
+    TravelManager::Segment.new(type: 'Hotel', from: 'MAD', to: 'MAD',
+                datetime_from: TravelManager::TimeUtils.to_time('2023-02-15', nil),
+                datetime_to: TravelManager::TimeUtils.to_time('2023-02-17', nil))
   end
 
   describe '.trips_to_text' do
@@ -48,9 +49,9 @@ RSpec.describe TextFormatter do
 
       it 'returns the array of arrays with the right text' do
         trips = [
-          Trip.new('MAD', [flight_segment, hotel_segment, train_segment]),
-          Trip.new('BCN', [flight_segment, hotel_segment, train_segment]),
-          Trip.new('NYC', [flight_segment, hotel_segment, train_segment])
+          TravelManager::Trip.new('MAD', [flight_segment, hotel_segment, train_segment]),
+          TravelManager::Trip.new('BCN', [flight_segment, hotel_segment, train_segment]),
+          TravelManager::Trip.new('NYC', [flight_segment, hotel_segment, train_segment])
         ]
 
         result = described_class.trips_to_text(trips)
@@ -60,10 +61,10 @@ RSpec.describe TextFormatter do
 
     context 'when the segment has an Unknown type' do
       it 'raises SegmentTypeNotCompatibleError' do
-        trips = [Trip.new('BCN', [Segment.new(
+        trips = [TravelManager::Trip.new('BCN', [TravelManager::Segment.new(
           type: 'Car', from: 'MAD', to: 'BCN',
-          datetime_from: TimeUtils.to_time('2026-03-02', '09:00'),
-          datetime_to: TimeUtils.to_time('2026-03-02', '17:00')
+          datetime_from: TravelManager::TimeUtils.to_time('2026-03-02', '09:00'),
+          datetime_to: TravelManager::TimeUtils.to_time('2026-03-02', '17:00')
         )])]
 
         expect do
