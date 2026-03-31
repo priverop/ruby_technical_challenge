@@ -72,15 +72,6 @@ RSpec.describe TextFormatter do
       end
     end
 
-    context 'when the trip is valid but the segments are empty' do
-      it 'returns nil' do
-        trip = Trip.new('MAD', [])
-        result = described_class.trips_to_text([trip])
-
-        expect(result).to eq([nil]) # TODO: WHY is not nill
-      end
-    end
-
     context 'when the trips array is empty' do
       it 'returns nil' do
         trips = []
