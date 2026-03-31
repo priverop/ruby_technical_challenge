@@ -24,7 +24,7 @@ module TravelManager
 
         # remove Windows OS end lines before splitting
         reservations.gsub("\r\n", "\n").split("\n").each do |line|
-          next if line == TEXT_PATTERNS[:reservation_pattern]
+          next if line == TEXT_PATTERNS[:reservation_pattern] || line.empty?
 
           parsed_segment = segment(line.strip)
           segments.push(parsed_segment) if parsed_segment
