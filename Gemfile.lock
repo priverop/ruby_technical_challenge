@@ -24,6 +24,7 @@ GEM
       bigdecimal (>= 3.1, < 5)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
+    logger (1.7.0)
     mcp (0.8.0)
       json-schema (>= 4.1)
     parallel (1.27.0)
@@ -102,6 +103,7 @@ PLATFORMS
 
 DEPENDENCIES
   debug (>= 1.0.0)
+  logger (~> 1.7)
   rack (~> 3.2)
   rackup (~> 2.3)
   rspec

@@ -2,6 +2,9 @@
 
 source 'https://rubygems.org'
 
+# Logger will disappear from the Ruby standard library in Ruby 3.5.0
+gem 'logger', '~> 1.7'
+
 group :development, :test do
   gem 'debug', '>= 1.0.0'
   gem 'rspec'
