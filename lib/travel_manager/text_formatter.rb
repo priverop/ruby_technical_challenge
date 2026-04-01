@@ -10,8 +10,6 @@ module TravelManager
       # @return [Array, nil] array of arrays with every trip formatted as text,
       # or nil if the trip array is nil or empty.
       def trips_to_text(trips)
-        return if trips.nil? || trips.empty?
-
         text_trips = trips.filter_map { |trip| trip_to_text(trip) }
         return if text_trips.empty?
 
@@ -47,6 +45,13 @@ module TravelManager
         send(method_name, segment)
       end
 
+      # Checks wether the segment type is supported with his own method.
+      #
+      # @param segment [Segment] segment type to evaluate.
+      # @param method_name [String]
+      #
+      # @return [Boolean] true if the method exist. Nil and logger warn if not.
+      #
       def supported_type?(segment, method_name)
         return true if respond_to?(method_name, true)
 
@@ -61,8 +66,6 @@ module TravelManager
       # @param segment [Segment] the segment to format.
       # @return [String, nil] hotel text, or nil if the segment is nil.
       def hotel_to_text(segment)
-        return if segment.nil?
-
         "#{SegmentType::HOTEL} at #{segment.from} on " \
           "#{TimeUtils.date(segment.datetime_from)} to #{TimeUtils.date(segment.datetime_to)}"
       end
@@ -72,8 +75,6 @@ module TravelManager
       # @param segment [Segment] the segment to format.
       # @return [String, nil] flight travel text, or nil if the segment is nil.
       def flight_to_text(segment)
-        return if segment.nil?
-
         "#{SegmentType::FLIGHT} #{travel_to_text(segment)}"
       end
 
@@ -82,8 +83,6 @@ module TravelManager
       # @param segment [Segment] the segment to format.
       # @return [String, nil] train travel text, or nil if the segment is nil.
       def train_to_text(segment)
-        return if segment.nil?
-
         "#{SegmentType::TRAIN} #{travel_to_text(segment)}"
       end
 
@@ -92,8 +91,6 @@ module TravelManager
       # @param segment [Segment] the segment to format.
       # @return [String, nil] generic travel text, or nil if the segment is nil.
       def travel_to_text(segment)
-        return if segment.nil?
-
         "from #{segment.from} to #{segment.to} at " \
           "#{TimeUtils.datetime(segment.datetime_from)} to #{TimeUtils.time(segment.datetime_to)}"
       end

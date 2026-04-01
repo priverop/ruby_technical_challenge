@@ -37,7 +37,7 @@ module TravelManager
     #
     # @return [Boolean] value of is_connection.
     def connection?
-      is_connection
+      is_connection || false
     end
   end
 end
