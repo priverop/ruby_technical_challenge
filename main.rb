@@ -7,22 +7,22 @@ TravelManager.logger = Logger.new($stderr)
 TravelManager.logger.level = Logger::WARN
 
 if ARGV.length != 1
-  warn 'Wrong number of arguments. Usage: BASED=SVQ main.rb input.txt'
+  warn 'Wrong number of arguments. Usage: BASED=SVQ bundle exec ruby main.rb input.txt'
   exit 1
 end
 
 based = ENV.fetch('BASED', nil)
 
 if based.nil? || based.to_s.empty?
-  warn 'Please specify where you are based using the BASED env variable.' \
+  warn 'Please specify where you are based using the BASED env variable. ' \
        'Usage: BASED=SVQ bundle exec ruby main.rb input.txt'
   exit 1
 end
 
 input_reservations = ARGV[0]
 
-puts "Itinerary for user based in #{based}:\n\n"
 begin
+  puts "Itinerary for user based in #{based}:\n\n"
   result = TravelManager.itinerary(file: input_reservations, based: based)
   puts result
   exit 0

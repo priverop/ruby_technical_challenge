@@ -27,7 +27,7 @@ RSpec.describe TravelManager::Itinerary do
         expect do
           described_class.generate(input_file, based)
         end.to raise_error(TravelManager::TravelManagerError,
-                           'No segments from ASD found.')
+                           'No segments from ASD found. Verify that BASED matches an origin in your input file.')
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe TravelManager::Itinerary do
         expect do
           described_class.generate(file, 'SVQ')
         end.to raise_error(TravelManager::TravelManagerError,
-                           "#{file} could not be parsed. Please review the logs.")
+                           "#{file} could not be parsed. Please review the warnings above.")
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe TravelManager::Itinerary do
         expect do
           described_class.generate(file, 'NYC')
         end.to raise_error(TravelManager::TravelManagerError,
-                           'No segments from NYC found.')
+                           'No segments from NYC found. Verify that BASED matches an origin in your input file.')
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe TravelManager::Itinerary do
         expect do
           described_class.generate(file, 'SVQ')
         end.to raise_error(TravelManager::TravelManagerError,
-                           'Trips could not be formatted. Please review the logs.')
+                           'Trips could not be formatted. Please review the warnings above.')
       end
     end
 
@@ -82,8 +82,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError,
-                           "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::BasedArgumentError,
+                           "Invalid BASED '#{based}'. Must be a 3-letter uppercase IATA code (e.g., BCN).")
       end
     end
 
@@ -93,8 +93,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError,
-                           "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::BasedArgumentError,
+                           "Invalid BASED '#{based}'. Must be a 3-letter uppercase IATA code (e.g., BCN).")
       end
     end
 
@@ -104,8 +104,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError,
-                           "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::BasedArgumentError,
+                           "Invalid BASED '#{based}'. Must be a 3-letter uppercase IATA code (e.g., BCN).")
       end
     end
 
@@ -115,8 +115,8 @@ RSpec.describe TravelManager::Itinerary do
 
         expect do
           described_class.generate(input_file, based)
-        end.to raise_error(TravelManager::ArgumentError,
-                           "The based variable (#{based}) should be a three-letter uppercase string.")
+        end.to raise_error(TravelManager::BasedArgumentError,
+                           "Invalid BASED '#{based}'. Must be a 3-letter uppercase IATA code (e.g., BCN).")
       end
     end
   end

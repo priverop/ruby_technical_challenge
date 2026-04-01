@@ -34,7 +34,7 @@ RSpec.describe TravelManager::FileReader do
       it 'raises FileNotFoundError' do
         expect do
           described_class.read(directory_path)
-        end.to raise_error(TravelManager::FileNotFoundError, 'spec/fixtures/ is a directory.')
+        end.to raise_error(TravelManager::FileNotFoundError, 'File spec/fixtures/ is a directory.')
       end
     end
 

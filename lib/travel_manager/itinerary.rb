@@ -45,12 +45,13 @@ module TravelManager
       # Validates the based param.
       #
       # @param based [String] user location.
-      # @raise ArgumentError if is not a string, not 3 characters long or not uppercase.
+      # @raise [BasedArgumentError] if is not a string, not 3 characters long or not uppercase.
       # @return [void, nil] nil if validation is correct.
       def validate_based!(based)
         return unless !based.is_a?(String) || based.length != 3 || based != based.upcase
 
-        raise TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string."
+        raise TravelManager::BasedArgumentError,
+              "Invalid BASED '#{based}'. Must be a 3-letter uppercase IATA code (e.g., BCN)."
       end
 
       # Parses reservations into segments.
@@ -64,7 +65,7 @@ module TravelManager
         return segments unless segments.empty?
 
         raise TravelManager::TravelManagerError,
-              "#{input_file} could not be parsed. Please review the logs."
+              "#{input_file} could not be parsed. Please review the warnings above."
       end
 
       # Builds trips from segments.
@@ -77,7 +78,8 @@ module TravelManager
         trips = TripBuilder.build(segments, based)
         return trips unless trips.nil? || trips.empty?
 
-        raise TravelManager::TravelManagerError, "No segments from #{based} found."
+        raise TravelManager::TravelManagerError, "No segments from #{based} found. " \
+                                                 'Verify that BASED matches an origin in your input file.'
       end
 
       # Formats trips into text.
@@ -89,7 +91,7 @@ module TravelManager
         trip_texts = TextFormatter.trips_to_text(trips)
         return trip_texts unless trip_texts.nil?
 
-        raise TravelManager::TravelManagerError, 'Trips could not be formatted. Please review the logs.'
+        raise TravelManager::TravelManagerError, 'Trips could not be formatted. Please review the warnings above.'
       end
     end
   end

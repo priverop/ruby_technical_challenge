@@ -45,7 +45,7 @@ module TravelManager
       #
       # @return [nil, void] nil if validations are ok.
       def validate_file_path!(file_path)
-        raise TravelManager::FileNotFoundError, "#{file_path} is a directory." if Dir.exist?(file_path)
+        raise TravelManager::FileNotFoundError, "File #{file_path} is a directory." if Dir.exist?(file_path)
         raise TravelManager::FileNotFoundError, "File #{file_path} not found." unless File.exist?(file_path)
         raise TravelManager::FileReadError, "File #{file_path} cannot be read." unless File.readable?(file_path)
       end

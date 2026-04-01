@@ -50,7 +50,7 @@ module TravelManager
       def supported_type?(segment, method_name)
         return true if respond_to?(method_name, true)
 
-        TravelManager.logger&.warn "Parsed type '#{segment.type}' is not a known Segment type " \
+        TravelManager.logger&.warn "'#{segment.type}' is not a known Segment type " \
                                    'and cannot be formatted to text. ' \
                                    "Ignoring segment '#{segment.type} #{segment.from} -> #{segment.to}'"
         false

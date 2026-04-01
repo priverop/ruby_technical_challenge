@@ -17,7 +17,8 @@ module TravelManager
       segment_not_found: 'SEGMENT pattern not found, ignoring line: %<line>s.',
       unknown_type: "Parsed type '%<type>s' is not a known Segment type. Ignoring line '%<line>s'.",
       invalid_line_format: "Invalid '%<type>s' format, ignoring line. Expected %<expected>s, got %<line>s.",
-      invalid_iata: "Parsed location '%<iata>s' is not a valid IATA code: it should be three-letter uppercase."
+      invalid_iata: "Invalid IATA code '%<iata>s'. Must be 3-letter uppercase. Ignoring line '%<line>s'.",
+      invalid_line_locations: "Locations cannot be the same. Ignoring line '%<line>s'."
     }.freeze
 
     class << self
@@ -86,12 +87,12 @@ module TravelManager
           trip_line,
           :trip_segment_pattern,
           :invalid_line_format,
-          { type: 'Flight/Train', expected: 'SEGMENT: Type FROM DATE TIME -> TO TIME' }
+          { type: 'Flight/Train', expected: 'SEGMENT: <Type> <IATA> <YYYY-MM-DD> <HH:MM> -> <IATA> <HH:MM>' }
         )
         return unless matcher
 
         type, from, date_from, time_from, to, time_to = matcher.captures
-        return unless valid_iata?(from) && valid_iata?(to) && from != to
+        return unless valid_trip_locations?(from, to, trip_line)
 
         build_segment(
           type: type,
@@ -111,12 +112,12 @@ module TravelManager
           hotel_line,
           :hotel_segment_pattern,
           :invalid_line_format,
-          { expected: 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO', type: 'Hotel' }
+          { expected: 'SEGMENT: Hotel <IATA> <CHECK_IN_DATE> -> <CHECK_OUT_DATE>' }
         )
         return unless matcher
 
         type, from, date_from, date_to = matcher.captures
-        return unless valid_iata?(from)
+        return unless valid_iata?(from, hotel_line)
 
         build_segment(
           type: type,
@@ -146,14 +147,45 @@ module TravelManager
         nil
       end
 
+      # Checks for IATA codes and different locations.
+      #
+      # @param from [String] departure location.
+      # @param to [String] destination location.
+      # @param line [String] parsing line for the error code.
+      #
+      # @return [Boolean]
+      #
+      def valid_trip_locations?(from, to, line)
+        valid_iata?(from, line) &&
+          valid_iata?(to, line) &&
+          valid_same_locations?(from, to, line)
+      end
+
       # Checks wether the input location string is a correct IATA code.
       #
       # @param iata [String] input IATA code.
+      # @param line [String] parsing line for the error code.
+      #
       # @return [Boolean] true if the string is 3 character long and all uppercase.
-      def valid_iata?(iata)
-        return true unless iata.length != 3 || iata != iata.upcase
+      def valid_iata?(iata, line)
+        return true if iata.length == 3 && iata == iata.upcase
 
-        TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_iata], iata:))
+        TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_iata], iata:, line:))
+        false
+      end
+
+      # Checks for different locations in a trip.
+      #
+      # @param from [String] departure location.
+      # @param to [String] destination location.
+      # @param line [String] parsing line for the error code.
+      #
+      # @return [Boolean] returns true if they are different. If not, false and logger warn.
+      #
+      def valid_same_locations?(from, to, line)
+        return true if from != to
+
+        TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_line_locations], line:))
         false
       end
 
