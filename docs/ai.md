@@ -6,6 +6,7 @@ I use AI for analysis, brainstorming, configuration issues, or simple refactorin
 
 Every suggestion (but the small refactors) is manually done by me after review. 
 
+I also added the used [CLAUDE.md](CLAUDE.md).
 
 ## Claude chatbot
 
