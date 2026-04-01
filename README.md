@@ -25,6 +25,6 @@ This project has been documented using [YARD](https://yardoc.org/). To preview t
 
 ## Documentation
 
-- [Requirements](/docs/requirimients.md): challenge requirements.
+- [Requirements](/docs/requirements.md): challenge requirements.
 - [AI usage registry](/docs/ai.md): as asked in the interview, I registered all my AI usage for transparency.
 - [Decision Registry](/docs/decisions.md): reasonings and explanation behind architectural and implementation decisions.
