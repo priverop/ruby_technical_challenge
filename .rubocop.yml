@@ -6,6 +6,7 @@ AllCops:
   Exclude:
     - "bin/**/*"
     - "spec/spec_helper.rb"
+    - "vendor/**/*"
 
 # Methods returning hashes shouldn't be taken care of.
 Metrics/MethodLength:
