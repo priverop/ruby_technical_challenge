@@ -1,6 +1,6 @@
 # FCM Digital - Ruby Technical challenge
 
-Ruby library to transform user reservations into a easy-to-follow itinerary.
+Ruby library to transform user reservations into an easy-to-follow itinerary.
 
 ## Setup
 
@@ -27,7 +27,7 @@ CLI (`main.rb`) → application orchestrator (`Itinerary`) → domain services (
 
 - [Requirements](/docs/requirements.md): challenge requirements.
 - [AI usage registry](/docs/ai.md): as asked in the interview, I registered all my AI usage for transparency.
-- [Decision Registry](/docs/decisions.md): reasonings and explanation behind architectural and implementation decisions.
+- [Decision Registry](/docs/decisions.md): reasoning and explanations behind architectural and implementation decisions.
 
 ### YARD documentation
 

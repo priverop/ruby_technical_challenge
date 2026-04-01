@@ -46,7 +46,7 @@ I decided to ignore these lines and treat every segment individually. The possib
 
 ### Connections
 
-Connection flights are useful to get the destination of the trip. Without them, it's almost impossible to know programmatically where is the user is heading:
+Connection flights are useful to get the destination of the trip. Without them, it's almost impossible to know programmatically where the user is heading:
 
 ```
 Flight from SVQ to BCN at 2023-03-02 06:40 to 09:10
@@ -92,7 +92,7 @@ I converted all the times to UTC using the local machine time zone, and added a 
 
 I tried to make the solution as robust as possible. However, there are endless possibilities (for example, a valid IATA code could be SV1), and there will be cases where the user will get weird outputs, here I list some.
 
-#### Duplicated or not linkable segements
+#### Duplicated or not linkable segments
 
 In case there are duplicated segments in the TXT file, the `TripBuilder` will extract what it needs to build the user's itinerary. A rare case would be that after the process, one or more segments are not included in the itinerary:
 
@@ -114,7 +114,7 @@ Train from MAD to SVQ at 2023-02-17 18:00 to 20:30
 Train from MAD to SVQ at 2023-02-17 17:00 to 19:30
 ```
 
-In this case, one of the trains to MAD won't be linked. The program will get the first one in the input.txt that matches the conditions. It does not choose chronologically.
+In this case, one of the trains from MAD won't be linked. The program will get the first one in the input.txt that matches the conditions. It does not choose chronologically.
 
 ### Exceptions vs Logger
 

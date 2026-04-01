@@ -33,9 +33,9 @@ Classic overengineering!!
 
 [Here](./claude_code_chats/5_architecture_design_first_review.md) is the conversation. Some of the ideas were just to double check.
 
-7. I ask CC to refactor the code to remove time_from and time_to from the Segment initializer, and use keyword arguments. This is specially useful when dealing with multiple arguments. It also suggested moving TimeUtils.to_time outside the Segment class (decoupling), I think it's a great idea. [Here](./claude_code_chats/6_refactor_keyword_arguments) is the plan.
+7. I asked CC to refactor the code to remove time_from and time_to from the Segment initializer, and use keyword arguments. This is specially useful when dealing with multiple arguments. It also suggested moving TimeUtils.to_time outside the Segment class (decoupling), I think it's a great idea. [Here](./claude_code_chats/6_refactor_keyword_arguments) is the plan.
 
-8. Asked CC to add YARD to TimeUtils, and make suggestions about the module. Changed to_hour to to_time, simplified guard in to_time, simplified same_dates (using `Date.to_date` ). The yard is too much, I'm removing the examples and I'm simplifying the descrptions. [Full log](./claude_code_chats/7_document_time_utils.md).
+8. Asked CC to add YARD to TimeUtils, and make suggestions about the module. Changed to_hour to to_time, simplified guard in to_time, simplified same_dates (using `Date.to_date` ). The yard is too much, I'm removing the examples and I'm simplifying the descriptions. [Full log](./claude_code_chats/7_document_time_utils.md).
 
 9. Asked CC to check where is the Yard missing: [Log](./claude_code_chats/8_find_missing_yard_docs.md).
 
@@ -51,9 +51,11 @@ Classic overengineering!!
 
 15. Created some review prompts with ChatGPT [here](https://chatgpt.com/share/69cd86c6-260c-8333-8893-3b0609837c1d):
     1. [Requirements coverage](./claude_code_chats/13_review_requirements.md). All good. Just a minor bug in the `connection?` method.
-    2. [Extensibility analysis](./claude_code_chats/14_extensibility_analysis.md). This is very helpful in order to have ideas to improve the project further in the future. However, I feel it's very biased because of the ideas I mentioned in the [decisions document](decisions.md). As always, balance between abstraction, and scope is they key.
+    2. [Extensibility analysis](./claude_code_chats/14_extensibility_analysis.md). This is very helpful in order to have ideas to improve the project further in the future. However, I feel it's very biased because of the ideas I mentioned in the [decisions document](decisions.md). As always, balance between abstraction and scope is the key.
     3. [Technical code review](./claude_code_chats/15_technical_code_review.md). _"The issues below are refinements, not red flags."_ Happy face. This is not the first time I read about the FileRead not being safe enough, so I'm rescuing broadly as suggested. About the TextFormatter test, I already run QA reviews multiple times and this is the first time I read this. I think it's well covered. Very good Medium issues, I did them all but 6 and 9. I did Low issues as well but the number 11. Very good prompt.
     4. [UX review](./claude_code_chats/16_ux_review.md). Very good insights, specially with consistency. Changed several error messages.
+
+16. Asked CC to review the docs files for grammar. `Review /docs/ for grammar. Ignore claude_code_chats directory.`.
 
 ## AI Learnings
 
