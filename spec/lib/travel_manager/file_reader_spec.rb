@@ -24,7 +24,7 @@ RSpec.describe TravelManager::FileReader do
       it 'raises FileNotFoundError' do
         expect do
           described_class.read(file)
-        end.to raise_error(TravelManager::FileNotFoundError, 'File unknown.txt not found')
+        end.to raise_error(TravelManager::FileNotFoundError, 'File unknown.txt not found.')
       end
     end
 
@@ -34,7 +34,21 @@ RSpec.describe TravelManager::FileReader do
       it 'raises FileNotFoundError' do
         expect do
           described_class.read(directory_path)
-        end.to raise_error(TravelManager::FileNotFoundError, 'spec/fixtures/ is a directory')
+        end.to raise_error(TravelManager::FileNotFoundError, 'spec/fixtures/ is a directory.')
+      end
+    end
+
+    context 'when the file is not readable' do
+      let(:file) { File.join(fixtures_path, 'file_reader.txt') }
+
+      before do
+        allow(File).to receive(:readable?).with(file).and_return(false)
+      end
+
+      it 'raises FileReadError' do
+        expect do
+          described_class.read(file)
+        end.to raise_error(TravelManager::FileReadError, "File #{file} cannot be read.")
       end
     end
 
@@ -44,7 +58,21 @@ RSpec.describe TravelManager::FileReader do
       it 'raises FileEmptyError' do
         expect do
           described_class.read(empty_file)
-        end.to raise_error(TravelManager::FileEmptyError, "#{empty_file} is empty")
+        end.to raise_error(TravelManager::FileEmptyError, "#{empty_file} is empty.")
+      end
+    end
+
+    context 'when File.read raises an error' do
+      let(:file) { File.join(fixtures_path, 'file_reader.txt') }
+
+      before do
+        allow(File).to receive(:read).and_raise(Errno::EACCES.new)
+      end
+
+      it 'raises FileReadError' do
+        expect do
+          described_class.read(file)
+        end.to raise_error(TravelManager::FileReadError)
       end
     end
   end
