@@ -61,7 +61,7 @@ module TravelManager
       # @return [void, nil] nil if validations are ok.
       #
       def validate_content!(file_content, file_path)
-        raise TravelManager::FileEmptyError, "#{file_path} is empty." if file_content.nil? || file_content.empty?
+        raise TravelManager::FileEmptyError, "#{file_path} is empty." if file_content.empty?
       end
     end
   end

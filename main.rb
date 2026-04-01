@@ -8,7 +8,7 @@ TravelManager.logger.level = Logger::WARN
 
 if ARGV.length != 1
   warn 'Wrong number of arguments. Usage: BASED=SVQ main.rb input.txt'
-  exit 0
+  exit 1
 end
 
 based = ENV.fetch('BASED', nil)
