@@ -12,9 +12,10 @@ module TravelManager
       def trips_to_text(trips)
         return if trips.nil? || trips.empty?
 
-        trips.map do |trip|
-          trip_to_text(trip)
-        end
+        text_trips = trips.filter_map { |trip| trip_to_text(trip) }
+        return if text_trips.empty?
+
+        text_trips
       end
 
       private
@@ -27,11 +28,10 @@ module TravelManager
       def trip_to_text(trip)
         return if trip.nil? || trip.sorted_segments.empty?
 
-        segments_text = trip.sorted_segments.map do |segment|
-          segment_to_text(segment)
-        end
+        segments_text = trip.sorted_segments.filter_map { |segment| segment_to_text(segment) }
+        return if segments_text.empty?
 
-        segments_text.unshift("TRIP to #{trip.destination}") unless segments_text.empty?
+        segments_text.unshift("TRIP to #{trip.destination}")
       end
 
       # Formats a single Segment into text.
@@ -43,12 +43,18 @@ module TravelManager
         return if segment.nil?
 
         method_name = "#{segment.type.downcase}_to_text"
-
-        unless respond_to?(method_name, true)
-          raise TravelManager::SegmentTypeNotCompatibleError, "Unknown segment type: #{segment.type}"
-        end
+        return unless supported_type?(segment, method_name)
 
         send(method_name, segment)
+      end
+
+      def supported_type?(segment, method_name)
+        return true if respond_to?(method_name, true)
+
+        TravelManager.logger&.warn "Parsed type '#{segment.type}' is not a known Segment type " \
+                                   'and cannot be formatted to text. ' \
+                                   "Ignoring segment '#{segment.type} #{segment.from} -> #{segment.to}'"
+        false
       end
 
       # Formats a Segment into the hotel text.

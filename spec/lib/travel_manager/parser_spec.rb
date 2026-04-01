@@ -185,7 +185,7 @@ RSpec.describe TravelManager::Parser do
       end
     end
 
-    context 'when the input text file has hotel line without Hotel' do
+    context 'when the input text file has no type' do
       let(:input_reservations) do
         <<~TEXT
           RESERVATION
@@ -197,10 +197,45 @@ RSpec.describe TravelManager::Parser do
         TEXT
       end
 
-      it 'raises SegmentTypeNotCompatibleError of valid Segments' do
-        expect do
-          described_class.parse(input_reservations)
-        end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: BCN')
+      it 'ignored the hotel line and returns array of flight Segments' do
+        expected = [
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+          TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50'))
+        ]
+
+        result = described_class.parse(input_reservations)
+        expect(result).to match_segments(expected)
+      end
+    end
+
+    context 'when the input text file has non supported segment type' do
+      let(:input_reservations) do
+        <<~TEXT
+          RESERVATION
+          SEGMENT: Car BCN 2023-01-05 -> 2023-01-10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          SEGMENT: Flight BCN 2023-01-10 10:30 -> SVQ 11:50
+        TEXT
+      end
+
+      it 'ignored the car line and returns array of flight Segments' do
+        expected = [
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')),
+          TravelManager::Segment.new(type: 'Flight', from: 'BCN', to: 'SVQ',
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-01-10', '10:30'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-01-10', '11:50'))
+        ]
+
+        result = described_class.parse(input_reservations)
+        expect(result).to match_segments(expected)
       end
     end
 

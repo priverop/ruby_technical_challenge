@@ -44,18 +44,23 @@ module TravelManager
         matcher = line.match(pattern)
 
         if matcher.nil?
-          TravelManager.logger&.warn "SEGMENT pattern not found, ignoring line: #{line}"
+          TravelManager.logger&.warn "SEGMENT pattern not found, ignoring line: #{line}."
           return
         end
 
         type = matcher.captures.first
         method_name = "#{type.downcase}_segment"
-
-        unless respond_to?(method_name, true)
-          raise TravelManager::SegmentTypeNotCompatibleError, "Unknown segment type: #{type}"
-        end
+        return unless supported_type?(type, method_name, line)
 
         send(method_name, line)
+      end
+
+      def supported_type?(type, method_name, line)
+        return true if respond_to?(method_name, true)
+
+        TravelManager.logger&.warn "Parsed type '#{type}' is not a known Segment type and " \
+                                   "cannot be parsed. Ignoring line '#{line}'."
+        false
       end
 
       # Creates a Segment from a Flight text line.
@@ -85,11 +90,13 @@ module TravelManager
         if matcher.nil?
           TravelManager.logger&.warn 'Invalid Flight/Train format, ignoring line. Expected ' \
                                      "'SEGMENT: Type FROM DEPARTURE_DATE DEPARTURE_TIME -> TO ARRIVAL_TIME'" \
-                                     ", got #{trip_line}.\n"
+                                     ", got #{trip_line}."
           return
         end
 
         type, from, date_from, time_from, to, time_to = matcher.captures
+        return unless valid_iata?(from) && valid_iata?(to)
+
         Segment.new(
           type: type, from: from, to: to,
           datetime_from: TimeUtils.to_time(date_from, time_from),
@@ -107,16 +114,25 @@ module TravelManager
 
         if matcher.nil?
           TravelManager.logger&.warn 'Invalid Hotel format, ignoring line.' \
-                                     "Expected 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO', got #{trip_line}.\n"
+                                     "Expected 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO', got #{hotel_line}."
           return
         end
 
         type, from, date_from, date_to = matcher.captures
+        return unless valid_iata?(from)
+
         Segment.new(
           type: type, from: from, to: from,
           datetime_from: TimeUtils.to_time(date_from, nil),
           datetime_to: TimeUtils.to_time(date_to, nil)
         )
+      end
+
+      def valid_iata?(iata)
+        return true unless iata.length != 3 && iata != iata.upcase
+
+        TravelManager.logger&.warn "Parsed location '#{iata}' is not a valid IATA code: it should be three-letter uppercase."
+        false
       end
     end
   end

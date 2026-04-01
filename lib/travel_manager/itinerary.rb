@@ -34,6 +34,10 @@ module TravelManager
 
         sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips) # TODO: Rescue exceptions?
 
+        if sorted_trip_texts.nil?
+          raise TravelManager::TravelManagerError, 'Trips could not be formatted. Please review the logs.'
+        end
+
         build_itinerary(sorted_trip_texts)
       end
 
@@ -44,7 +48,7 @@ module TravelManager
       # @param sorted_trips [Array] array of trips.
       # @return [String] complete itinerary text.
       def build_itinerary(sorted_trips)
-        itinerary = ''
+        itinerary = "\n"
 
         sorted_trips.each do |trip|
           itinerary += trip.join("\n")

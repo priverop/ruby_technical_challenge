@@ -8,9 +8,8 @@ module TravelManager
   class TravelManagerError < StandardError; end
   class FileNotFoundError < TravelManagerError; end
   class FileEmptyError < TravelManagerError; end
-  class FileExtensionError < TravelManagerError; end
+  class FileReadError < TravelManagerError; end
   class ArgumentError < TravelManagerError; end
-  class SegmentTypeNotCompatibleError < TravelManagerError; end
 
   # Public facade for Itinerary.
   #

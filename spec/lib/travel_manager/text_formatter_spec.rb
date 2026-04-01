@@ -60,16 +60,15 @@ RSpec.describe TravelManager::TextFormatter do
     end
 
     context 'when the segment has an Unknown type' do
-      it 'raises SegmentTypeNotCompatibleError' do
+      it 'ignores that segment' do
         trips = [TravelManager::Trip.new('BCN', [TravelManager::Segment.new(
           type: 'Car', from: 'MAD', to: 'BCN',
           datetime_from: TravelManager::TimeUtils.to_time('2026-03-02', '09:00'),
           datetime_to: TravelManager::TimeUtils.to_time('2026-03-02', '17:00')
         )])]
 
-        expect do
-          described_class.trips_to_text(trips)
-        end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: Car')
+        result = described_class.trips_to_text(trips)
+        expect(result).to be_nil
       end
     end
 

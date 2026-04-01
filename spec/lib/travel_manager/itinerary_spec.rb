@@ -31,16 +31,6 @@ RSpec.describe TravelManager::Itinerary do
       end
     end
 
-    context 'when the input file has wrong segment type' do
-      it 'raises SegmentTypeNotCompatibleError exception' do
-        file = File.join(fixtures_path, 'wrong_segment.txt')
-
-        expect do
-          described_class.generate(file, 'SVQ')
-        end.to raise_error(TravelManager::SegmentTypeNotCompatibleError, 'Unknown segment type: BCN')
-      end
-    end
-
     context 'when the input file has every line wrong and the parser returns an empty array' do
       it 'raises TravelManagerError exception' do
         file = File.join(fixtures_path, 'wrong_parse.txt')
@@ -60,6 +50,29 @@ RSpec.describe TravelManager::Itinerary do
           described_class.generate(file, 'NYC')
         end.to raise_error(TravelManager::TravelManagerError,
                            'No segments from NYC found.')
+      end
+    end
+
+    # When adding a new Segment type, we need to create new methods in the Parser and TextFormatter.
+    # If only added in the Parser, the segment will be parsed but we won't be able to format it later.
+    # Resulting on an empty array as TextFormatter.trips_to_text output.
+    context 'when the input file has an unknown segment type for the TextFormatter' do
+      it 'raises TravelManagerError exception' do
+        file = File.join(fixtures_path, 'new_segment_type.txt')
+        car_segment = TravelManager::Segment.new(
+          type: 'Car', from: 'SVQ', to: 'BCN',
+          datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+          datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10')
+        )
+        allow(TravelManager::Parser).to receive(:parse).and_return([car_segment])
+        allow(TravelManager::TripBuilder).to receive(:build).and_return(
+          [TravelManager::Trip.new('BCN', [car_segment])]
+        )
+
+        expect do
+          described_class.generate(file, 'SVQ')
+        end.to raise_error(TravelManager::TravelManagerError,
+                           'Trips could not be formatted. Please review the logs.')
       end
     end
 
