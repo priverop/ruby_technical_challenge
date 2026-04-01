@@ -5,11 +5,11 @@ require_relative 'parser'
 require_relative 'trip_builder'
 require_relative 'text_formatter'
 
-# Main controller, uses TravelManager to transform reservations into a itinerary.
 module TravelManager
+  # Main controller, transforms user reservations into a itinerary.
   class Itinerary
     class << self
-      # Transform the user reservations .txt into a sorted itinerary.
+      # Transforms the user reservations .txt into a sorted text itinerary.
       #
       # @param input_file [String] path of the reservations .txt.
       # @param based [String] starting location of the user.
@@ -23,43 +23,23 @@ module TravelManager
 
         input_reservations = FileReader.read(input_file)
 
-        unsorted_segments = Parser.parse(input_reservations)
+        segments = parse_segments!(input_reservations, input_file)
 
-        if unsorted_segments.empty?
-          raise TravelManager::TravelManagerError,
-                "#{input_file} could not be parsed. Please review the logs."
-        end
+        trips = build_trips!(segments, based)
 
-        sorted_trips = TripBuilder.build(unsorted_segments, based)
+        trip_texts = format_trips!(trips)
 
-        if sorted_trips.nil? || sorted_trips.empty?
-          raise TravelManager::TravelManagerError, "No segments from #{based} found."
-        end
-
-        sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips)
-
-        if sorted_trip_texts.nil?
-          raise TravelManager::TravelManagerError, 'Trips could not be formatted. Please review the logs.'
-        end
-
-        build_itinerary(sorted_trip_texts)
+        build_itinerary(trip_texts)
       end
 
       private
 
-      # Composes the itinerary string merging the trip texts.
+      # Composes the itinerary string merging the trip text arrays.
       #
       # @param sorted_trips [Array<Trip>] array of trips.
       # @return [String] complete itinerary text.
       def build_itinerary(sorted_trips)
-        itinerary = "\n"
-
-        sorted_trips.each do |trip|
-          itinerary += trip.join("\n")
-          itinerary += "\n\n"
-        end
-
-        itinerary
+        sorted_trips.map { |trip| trip.join("\n") }.join("\n\n")
       end
 
       # Validates the based param.
@@ -71,6 +51,45 @@ module TravelManager
         return unless !based.is_a?(String) || based.length != 3 || based != based.upcase
 
         raise TravelManager::ArgumentError, "The based variable (#{based}) should be a three-letter uppercase string."
+      end
+
+      # Parses reservations into segments.
+      #
+      # @param reservations [String] raw reservation text.
+      # @param input_file [String] path used only for the error message.
+      # @raise [TravelManagerError] if the parser returns an empty array.
+      # @return [Array<Segment>]
+      def parse_segments!(reservations, input_file)
+        segments = Parser.parse(reservations)
+        return segments unless segments.empty?
+
+        raise TravelManager::TravelManagerError,
+              "#{input_file} could not be parsed. Please review the logs."
+      end
+
+      # Builds trips from segments.
+      #
+      # @param segments [Array<Segment>]
+      # @param based [String] user initial location.
+      # @raise [TravelManagerError] if no trips are found from the base location.
+      # @return [Array<Trip>]
+      def build_trips!(segments, based)
+        trips = TripBuilder.build(segments, based)
+        return trips unless trips.nil? || trips.empty?
+
+        raise TravelManager::TravelManagerError, "No segments from #{based} found."
+      end
+
+      # Formats trips into text.
+      #
+      # @param trips [Array<Trip>]
+      # @raise [TravelManagerError] if the formatter returns nil.
+      # @return [Array<Array<String>>]
+      def format_trips!(trips)
+        trip_texts = TextFormatter.trips_to_text(trips)
+        return trip_texts unless trip_texts.nil?
+
+        raise TravelManager::TravelManagerError, 'Trips could not be formatted. Please review the logs.'
       end
     end
   end
