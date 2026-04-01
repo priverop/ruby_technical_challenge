@@ -357,5 +357,47 @@ RSpec.describe TravelManager::Parser do
         expect(result).to eq([])
       end
     end
+
+    context 'when the input from has lowercase IATA code' do
+      it 'ignores the segment and returns the valid one' do
+        input = <<~TEXT
+          RESERVATION
+          SEGMENT: Flight bcn 2023-01-05 20:40 -> SVQ 22:10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+          TEXT
+
+        expected = [
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                                    datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                    datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10'))
+        ]
+
+        result = described_class.parse(input)
+        expect(result).to match_segments(expected)
+      end
+    end
+
+    context 'when the input has mixed lower/upper IATA codes (from, and to)' do
+      it 'ignores the segment' do
+        result = described_class.parse('SEGMENT: Flight Bcn 2023-01-05 20:40 -> SVQ 22:10')
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when the input from has a short IATA code' do
+      it 'ignores the segment' do
+        result = described_class.parse('SEGMENT: Flight SV 2023-01-05 20:40 -> BCN 22:10')
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when the input has lowercase IATA code' do
+      it 'ignores the segment' do
+        result = described_class.parse('SEGMENT: Flight SVQQ 2023-01-05 20:40 -> BCN 22:10')
+        expect(result).to eq([])
+      end
+    end
   end
 end
