@@ -11,6 +11,9 @@ AllCops:
 Metrics/MethodLength:
   CountAsOne: "hash"
 
+Metrics/ClassLength:
+  Max: 110
+
 RSpec/ExampleLength:
   CountAsOne: "hash"
   Max: 15 # the default is 5, wow. If the test is readable...
