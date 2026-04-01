@@ -57,7 +57,12 @@ Classic overengineering!!
 
 ## AI Learnings
 
-- Prompts.
-- Skills.
-- Agent orchestration: https://code.claude.com/docs/en/agent-teams. 
-- Token usage.
+This is some personal notes I took to myself during the development of this project:
+
+- **Prompts:** ChatGPT is very good at making prompts for Claude Code. It's very easy to bias the model, so we need to be as agnostic to the code as possible.
+
+- **Skills:** after re-using the same prompts over and over (QA reviewer) I thought it would be useful to create a custom skill for this. I'll test it out soon. I'll try to run the same prompts, after installing some of the most popular Ruby skills: [Ruby pro](https://www.skillsdirectory.com/skills/sickn33-ruby-pro), [37signals style](https://www.skillsdirectory.com/skills/majiayu000-37signals-rails-style), or [Andrew Kane style](https://www.skillsdirectory.com/skills/microck-andrew-kane-gem-writer). Although I'm not quite confident at them looking at the contents.
+
+- **Agent orchestration:** I feel it would be very interesting to orchestrate agents to make "a team" that communicates and makes the prompts automatically, review work, etc. Apparently Claude Code has an experimental [feature](https://code.claude.com/docs/en/agent-teams.) for this.
+
+- **Token usage:** The main bottleneck with the agent. Finding the sweet-spot between broad/generic prompts and super specific tasks will be a basic requirement for software engineers.
