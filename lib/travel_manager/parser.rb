@@ -21,7 +21,7 @@ module TravelManager
     }.freeze
 
     class << self
-      # Creates an array of Segments from the reservations text of the user.
+      # Parses reservation text into Segment objects.
       #
       # @param reservations [String] input reservation text.
       # @return [Array<Segment>] parsed Segments.
@@ -42,7 +42,7 @@ module TravelManager
 
       private
 
-      # Creates a Segment from Segment text line (Hotel/Flight/Train).
+      # Parses a SEGMENT line into a Segment object.
       #
       # @param line [String] SEGMENT: text line.
       # @return [Segment, nil] segment of the right type, or nil if the segment type is not supported.
@@ -61,6 +61,12 @@ module TravelManager
         send(method_name, line)
       end
 
+      # Checks if a segment type is supported.
+      #
+      # @param type [String] segment type.
+      # @param method_name [String] name of the specific parser.
+      # @param line [String] line of the reservations that we are trying to parse.
+      # @return [Boolean] true if there is a method to parse this segment type.
       def supported_type?(type, method_name, line)
         return true if respond_to?(method_name, true)
 
@@ -68,7 +74,7 @@ module TravelManager
         false
       end
 
-      # Creates a Segment from a Flight text line.
+      # Parses a Flight segment.
       #
       # @param trip_line [String] flight text line.
       # @return [Segment]
@@ -76,7 +82,7 @@ module TravelManager
         trip_segment(trip_line)
       end
 
-      # Creates a Segment from a Train text line.
+      # Parses a Train segment.
       #
       # @param trip_line [String] train text line.
       # @return [Segment]
@@ -84,7 +90,7 @@ module TravelManager
         trip_segment(trip_line)
       end
 
-      # Creates a Segment from a Flight/Train Segment text line.
+      # Parses a Flight/Train segment.
       #
       # @param trip_line [String] text line of type Flight/Train.
       # @return [Segment, nil] new Segment, or nil if the parsed from and to are not a valid IATA code.
@@ -109,7 +115,7 @@ module TravelManager
         )
       end
 
-      # Creates a Segment from a Hotel Segment text line.
+      # Parses a Hotel segment.
       #
       # @param hotel_line [String] text line of type Hotel.
       # @return [Segment, nil] new Segment, or nil if the parsed from is not a valid IATA code.
@@ -120,7 +126,6 @@ module TravelManager
           :invalid_line_format,
           { expected: 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO', type: 'Hotel' }
         )
-
         return unless matcher
 
         type, from, date_from, date_to = matcher.captures
@@ -135,6 +140,13 @@ module TravelManager
         )
       end
 
+      # Matches a line against a pattern and logs if it fails.
+      #
+      # @param line [String] string to find matches. The line we are parsing.
+      # @param pattern_key [Symbol] key of the patern constants.
+      # @param error_key [Symbol] key of the error templates.
+      # @param error_variables [Hash] variables for the error template.
+      # @return [MatchData, nil] matched data or nil if not match.
       def match_pattern(line, pattern_key, error_key, error_variables = {})
         pattern = TEXT_PATTERNS[pattern_key]
         matcher = line.match(pattern)
@@ -158,6 +170,14 @@ module TravelManager
         false
       end
 
+      # Builds a Segment object.
+      #
+      # @param type [String]
+      # @param from [String]
+      # @param to [String]
+      # @param datetime_from [Time]
+      # @param datetime_to [Time]
+      # @return [Segment]
       def build_segment(type:, from:, to:, datetime_from:, datetime_to:)
         Segment.new(
           type: type, from: from, to: to,
