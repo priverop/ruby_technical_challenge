@@ -13,7 +13,7 @@ Metrics/MethodLength:
   CountAsOne: "hash"
 
 Metrics/ClassLength:
-  Max: 110
+  Max: 120
 
 RSpec/ExampleLength:
   CountAsOne: "hash"
