@@ -21,7 +21,8 @@ module TravelManager
 
       #
       # Reads the file safely.
-      # There are multiple reason for File.read to fail, so it's better to rescue everything just in case.
+      # There are multiple reasons for File.read to fail, and to avoid race conditions
+      # I'd rather rescue any system call error.
       #
       # @param file_path [String] path of the file.
       #
@@ -31,7 +32,7 @@ module TravelManager
       #
       def read_file!(file_path)
         File.read(file_path)
-      rescue Errno::ENOENT, Errno::EACCES => e
+      rescue SystemCallError => e
         raise TravelManager::FileReadError, e.message
       end
 
