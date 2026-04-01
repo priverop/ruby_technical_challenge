@@ -9,14 +9,14 @@ module TravelManager
   class FileNotFoundError < TravelManagerError; end
   class FileEmptyError < TravelManagerError; end
   class FileReadError < TravelManagerError; end
-  class ArgumentError < TravelManagerError; end
+  class BasedArgumentError < TravelManagerError; end
 
   # Public facade for Itinerary.
   #
   # @param file [String] input file of the user.
   # @param based [String] based location of the user.
   #
-  # @return [Strimg] sorted itinerary.
+  # @return [String] sorted itinerary.
   #
   def self.itinerary(file:, based:)
     Itinerary.generate(file, based)
@@ -24,7 +24,7 @@ module TravelManager
 
   # Getter for the logger.
   #
-  # @return [void]
+  # @return [Logger]
   #
   def self.logger
     @logger
@@ -34,7 +34,7 @@ module TravelManager
   #
   # @param [Logger] logger instance.
   #
-  # @return [void]
+  # @return [Logger]
   #
   def self.logger=(logger)
     @logger = logger
