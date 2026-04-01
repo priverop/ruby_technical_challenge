@@ -17,14 +17,25 @@ The default input is input.txt, which is copied from the root to the image. You 
 - Install [Ruby 3.4.7](https://www.ruby-lang.org/es/downloads/) (I suggest using [rbenv](https://github.com/rbenv/rbenv) or similar). Not tested in other versions.
 - Install [Bundler](https://bundler.io/).
 - Install the library with `bundler install`.
-- Run the project with `BASED=SVG bundle exec ruby main.rb input.txt`.
+- Run the project with `BASED=SVQ bundle exec ruby main.rb input.txt`.
 
-## YARD documentation
+## Project diagram
 
-This project has been documented using [YARD](https://yardoc.org/). To preview the documentation just run `bin/yard server` and open the given url.
+CLI (`main.rb`) → application orchestrator (`Itinerary`) → domain services (`Parser`, `TripBuilder`, `TextFormatter`) + entities (`Trip`, `Segment`).
 
 ## Documentation
 
 - [Requirements](/docs/requirements.md): challenge requirements.
 - [AI usage registry](/docs/ai.md): as asked in the interview, I registered all my AI usage for transparency.
 - [Decision Registry](/docs/decisions.md): reasonings and explanation behind architectural and implementation decisions.
+
+### YARD documentation
+
+This project has been documented using [YARD](https://yardoc.org/). To preview the documentation just run `bin/yard server` and open the given server URL.
+
+## Going further
+
+Ideas to improve the project.
+
+- Install [Optparse](https://github.com/ruby/optparse) for a better CLI management. The current CLI is very basic.
+- Automated tests in pre-commit with Git Hooks (I've always used [Overcommit](https://github.com/sds/overcommit)).
