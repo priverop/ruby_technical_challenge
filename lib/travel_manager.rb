@@ -16,7 +16,7 @@ module TravelManager
   # @param file [String] input file of the user.
   # @param based [String] based location of the user.
   #
-  # @return [void]
+  # @return [Strimg] sorted itinerary.
   #
   def self.itinerary(file:, based:)
     Itinerary.generate(file, based)
@@ -24,7 +24,7 @@ module TravelManager
 
   # Getter for the logger.
   #
-  # @return [void]>
+  # @return [void]
   #
   def self.logger
     @logger
@@ -34,7 +34,7 @@ module TravelManager
   #
   # @param [Logger] logger instance.
   #
-  # @return [void]>
+  # @return [void]
   #
   def self.logger=(logger)
     @logger = logger

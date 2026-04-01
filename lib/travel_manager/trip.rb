@@ -8,7 +8,7 @@ module TravelManager
     # Creates a new instance of Trip.
     #
     # @param destination [String] where the user is headed.
-    # @param sorted_segments [Array] linked segments.
+    # @param sorted_segments [Array<Segment>] linked segments.
     #
     def initialize(destination, sorted_segments)
       @destination = destination

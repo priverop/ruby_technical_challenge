@@ -13,26 +13,30 @@ module TravelManager
       #
       # @param input_file [String] path of the reservations .txt.
       # @param based [String] starting location of the user.
+      # @raise [TravelManagerError] if the Parser returns an empty array.
+      # @raise [TravelManagerError] if the TripBuilder returns an empty array or nil.
+      # @raise [TravelManagerError] if the TextFormatter returns nil.
       # @return [String] sorted itinerary.
+      #
       def generate(input_file, based)
         validate_based!(based)
 
         input_reservations = FileReader.read(input_file)
 
-        unsorted_segments = Parser.parse(input_reservations) # TODO: Rescue exceptions?
+        unsorted_segments = Parser.parse(input_reservations)
 
         if unsorted_segments.empty?
           raise TravelManager::TravelManagerError,
                 "#{input_file} could not be parsed. Please review the logs."
         end
 
-        sorted_trips = TripBuilder.build(unsorted_segments, based) # TODO: Rescue exceptions?
+        sorted_trips = TripBuilder.build(unsorted_segments, based)
 
         if sorted_trips.nil? || sorted_trips.empty?
           raise TravelManager::TravelManagerError, "No segments from #{based} found."
         end
 
-        sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips) # TODO: Rescue exceptions?
+        sorted_trip_texts = TextFormatter.trips_to_text(sorted_trips)
 
         if sorted_trip_texts.nil?
           raise TravelManager::TravelManagerError, 'Trips could not be formatted. Please review the logs.'
@@ -45,7 +49,7 @@ module TravelManager
 
       # Composes the itinerary string merging the trip texts.
       #
-      # @param sorted_trips [Array] array of trips.
+      # @param sorted_trips [Array<Trip>] array of trips.
       # @return [String] complete itinerary text.
       def build_itinerary(sorted_trips)
         itinerary = "\n"
@@ -60,7 +64,7 @@ module TravelManager
 
       # Validates the based param.
       #
-      # @param based [STRING] user location.
+      # @param based [String] user location.
       # @raise ArgumentError if is not a string, not 3 characters long or not uppercase.
       # @return [void, nil] nil if validation is correct.
       def validate_based!(based)

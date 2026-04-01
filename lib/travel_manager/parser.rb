@@ -16,7 +16,7 @@ module TravelManager
       # Creates an array of Segments from the reservations text of the user.
       #
       # @param reservations [String] input reservation text.
-      # @return [Array] parsed Segments.
+      # @return [Array<Segment>] parsed Segments.
       def parse(reservations)
         return [] if reservations.nil?
 
@@ -37,8 +37,7 @@ module TravelManager
       # Creates a Segment from Segment text line (Hotel/Flight/Train).
       #
       # @param line [String] SEGMENT: text line.
-      # @raise [SegmentTypeNotCompatibleError] if the Segment.Type is not supported.
-      # @return [Segment] segment of the right type.
+      # @return [Segment, nil] segment of the right type, or nil if the segment type is not supported.
       def segment(line)
         pattern = TEXT_PATTERNS[:generic_segment_pattern]
         matcher = line.match(pattern)
@@ -82,7 +81,7 @@ module TravelManager
       # Creates a Segment from a Flight/Train Segment text line.
       #
       # @param trip_line [String] text line of type Flight/Train.
-      # @return [Segment]
+      # @return [Segment, nil] new Segment, or nil if the parsed from and to are not a valid IATA code.
       def trip_segment(trip_line)
         pattern = TEXT_PATTERNS[:trip_segment_pattern]
         matcher = trip_line.match(pattern)
@@ -107,7 +106,7 @@ module TravelManager
       # Creates a Segment from a Hotel Segment text line.
       #
       # @param hotel_line [String] text line of type Hotel.
-      # @return [Segment]
+      # @return [Segment, nil] new Segment, or nil if the parsed from is not a valid IATA code.
       def hotel_segment(hotel_line)
         pattern = TEXT_PATTERNS[:hotel_segment_pattern]
         matcher = hotel_line.match(pattern)
@@ -128,8 +127,12 @@ module TravelManager
         )
       end
 
+      # Checks wether the input location string is a correct IATA code.
+      #
+      # @param iata [String] input IATA code.
+      # @return [Boolean] true if the string is 3 character long and all uppercase.
       def valid_iata?(iata)
-        return true unless iata.length != 3 && iata != iata.upcase
+        return true unless iata.length != 3 || iata != iata.upcase
 
         TravelManager.logger&.warn "Parsed location '#{iata}' is not a valid IATA code: it should be three-letter uppercase."
         false

@@ -16,7 +16,7 @@ module TravelManager
     # @param to [String] location destination of the Segment.
     # @param datetime_from [Time] when the Segment starts.
     # @param datetime_to [Time] when the Segment ends.
-    # @return [void]
+    # @return [Segment] new instance of the object.
     def initialize(type:, from:, to:, datetime_from:, datetime_to:)
       @type = type
       @from = from

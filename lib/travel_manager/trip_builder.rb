@@ -11,10 +11,10 @@ module TravelManager
     class << self
       # Build all the Trips for the itinerary.
       #
-      # @param unsorted_segments [Array] unsorted segments to pull from.
+      # @param unsorted_segments [Array<Segment>] unsorted segments to pull from.
       # @param based [String] starting location of the user.
       #
-      # @return [Array] sorted Trips with sorted segments and destination.
+      # @return [Array<Trip>] sorted Trips with sorted segments and destination.
       #
       def build(unsorted_segments, based)
         # Gets all the segments that start in the based location
@@ -34,7 +34,7 @@ module TravelManager
 
       # Gets the destination of the trip, ignoring connection flights.
       #
-      # @param sorted_segments [Array] sorted trip segments.
+      # @param sorted_segments [Array<Segment>] sorted trip segments.
       # @return [String] the trip destination.
       def find_trip_destination(sorted_segments)
         sorted_segments.find { |segment| !segment.connection? }.to
@@ -43,9 +43,9 @@ module TravelManager
       # Gets all the linked segments starting from the "previous" segment.
       #
       # @param previous [Segment] based segment, where the trip starts.
-      # @param unsorted_segments [Array] unsorted segments.
+      # @param unsorted_segments [Array<Segment>] unsorted segments.
       #
-      # @return [Array] sorted segments or empty if links not found.
+      # @return [Array<Segment>] sorted segments or empty if links not found.
       #
       def sorted_segments(previous, unsorted_segments)
         sorted = []
@@ -62,7 +62,7 @@ module TravelManager
 
       # Gets the next linked segment of the "previous" segment.
       #
-      # @param unsorted_segments [Array] unsorted segments to look for the link.
+      # @param unsorted_segments [Array<Segment>] unsorted segments to look for the link.
       # @param previous [Segment] "before" segment.
       # @return [Segment] following segment to the "previous" param.
       def find_link(unsorted_segments, previous)

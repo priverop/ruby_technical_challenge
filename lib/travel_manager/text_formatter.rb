@@ -6,7 +6,7 @@ module TravelManager
     class << self
       # Formats an array of Trips into text.
       #
-      # @param trips [Array] array of trips to format.
+      # @param trips [Array<Trip>] array of trips to format.
       # @return [Array, nil] array of arrays with every trip formatted as text,
       # or nil if the trip array is nil or empty.
       def trips_to_text(trips)
@@ -36,7 +36,6 @@ module TravelManager
 
       # Formats a single Segment into text.
       #
-      # @raise [SegmentTypeNotCompatibleError] if the segment type has not a method to_text implemented.
       # @param segment [Segment] the segment to format.
       # @return [String, nil] formatted text, or nil if the segment is nil.
       def segment_to_text(segment)
