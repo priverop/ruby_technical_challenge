@@ -61,19 +61,6 @@ module TravelManager
         send(method_name, line)
       end
 
-      # Checks if a segment type is supported.
-      #
-      # @param type [String] segment type.
-      # @param method_name [String] name of the specific parser.
-      # @param line [String] line of the reservations that we are trying to parse.
-      # @return [Boolean] true if there is a method to parse this segment type.
-      def supported_type?(type, method_name, line)
-        return true if respond_to?(method_name, true)
-
-        TravelManager.logger&.warn(format(ERROR_MESSAGES[:unknown_type], type:, line:))
-        false
-      end
-
       # Parses a Flight segment.
       #
       # @param trip_line [String] flight text line.
@@ -104,7 +91,7 @@ module TravelManager
         return unless matcher
 
         type, from, date_from, time_from, to, time_to = matcher.captures
-        return unless valid_iata?(from) && valid_iata?(to)
+        return unless valid_iata?(from) && valid_iata?(to) && from != to
 
         build_segment(
           type: type,
@@ -167,6 +154,19 @@ module TravelManager
         return true unless iata.length != 3 || iata != iata.upcase
 
         TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_iata], iata:))
+        false
+      end
+
+      # Checks if a segment type is supported.
+      #
+      # @param type [String] segment type.
+      # @param method_name [String] name of the specific parser.
+      # @param line [String] line of the reservations that we are trying to parse.
+      # @return [Boolean] true if there is a method to parse this segment type.
+      def supported_type?(type, method_name, line)
+        return true if respond_to?(method_name, true)
+
+        TravelManager.logger&.warn(format(ERROR_MESSAGES[:unknown_type], type:, line:))
         false
       end
 
