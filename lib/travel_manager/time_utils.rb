@@ -74,7 +74,7 @@ module TravelManager
       # @param date [String] date in `YYYY-MM-DD` format.
       # @return [Time] the parsed time at 00:00.
       def date_to_time(date)
-        Time.strptime(date, '%Y-%m-%d')
+        Time.strptime("#{date} UTC", '%Y-%m-%d %Z')
       end
 
       # Parses a date and time string into a Time object.
@@ -83,7 +83,7 @@ module TravelManager
       # @param time [String] time in `HH:MM` format.
       # @return [Time] the parsed datetime.
       def datetime_to_time(date, time)
-        Time.strptime("#{date} #{time}", '%Y-%m-%d %H:%M')
+        Time.strptime("#{date} #{time} UTC", '%Y-%m-%d %H:%M %Z')
       end
     end
   end

@@ -10,7 +10,7 @@ RSpec.describe TravelManager::TimeUtils do
       it 'returns a Time with date and time' do
         result = described_class.to_time('2023-03-02', '06:40')
 
-        expect(result).to eq(Time.new(2023, 3, 2, 6, 40))
+        expect(result).to eq(Time.utc(2023, 3, 2, 6, 40))
       end
     end
 
@@ -18,7 +18,7 @@ RSpec.describe TravelManager::TimeUtils do
       it 'returns a Time at midnight' do
         result = described_class.to_time('2023-03-02', nil)
 
-        expect(result).to eq(Time.new(2023, 3, 2, 0, 0))
+        expect(result).to eq(Time.utc(2023, 3, 2, 0, 0))
       end
     end
   end
@@ -28,7 +28,7 @@ RSpec.describe TravelManager::TimeUtils do
       it 'returns arrival on the same day' do
         result = described_class.arrival_time('2023-03-02', '06:40', '09:10')
 
-        expect(result).to eq(Time.new(2023, 3, 2, 9, 10))
+        expect(result).to eq(Time.utc(2023, 3, 2, 9, 10))
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe TravelManager::TimeUtils do
       it 'returns arrival on the next day' do
         result = described_class.arrival_time('2023-03-02', '23:00', '02:30')
 
-        expect(result).to eq(Time.new(2023, 3, 3, 2, 30))
+        expect(result).to eq(Time.utc(2023, 3, 3, 2, 30))
       end
     end
 
@@ -44,7 +44,7 @@ RSpec.describe TravelManager::TimeUtils do
       it 'returns arrival on the next day' do
         result = described_class.arrival_time('2023-03-02', '23:59', '00:00')
 
-        expect(result).to eq(Time.new(2023, 3, 3, 0, 0))
+        expect(result).to eq(Time.utc(2023, 3, 3, 0, 0))
       end
     end
 
@@ -52,14 +52,44 @@ RSpec.describe TravelManager::TimeUtils do
       it 'returns arrival on the same day' do
         result = described_class.arrival_time('2023-03-02', '10:00', '10:00')
 
-        expect(result).to eq(Time.new(2023, 3, 2, 10, 0))
+        expect(result).to eq(Time.utc(2023, 3, 2, 10, 0))
+      end
+    end
+
+    context 'when the overnight flight crosses a DST spring-forward transition' do
+      around do |example|
+        original_tz = ENV.fetch('TZ', nil)
+        ENV['TZ'] = 'America/New_York'
+        example.run
+        ENV['TZ'] = original_tz
+      end
+
+      it 'returns the correct arrival time unaffected by DST' do
+        result = described_class.arrival_time('2023-03-11', '23:00', '02:30')
+
+        expect(result).to eq(Time.utc(2023, 3, 12, 2, 30))
+      end
+    end
+
+    context 'when the overnight flight crosses a DST fall-back transition' do
+      around do |example|
+        original_tz = ENV.fetch('TZ', nil)
+        ENV['TZ'] = 'America/New_York'
+        example.run
+        ENV['TZ'] = original_tz
+      end
+
+      it 'returns the correct arrival time unaffected by DST' do
+        result = described_class.arrival_time('2023-11-04', '23:00', '02:30')
+
+        expect(result).to eq(Time.utc(2023, 11, 5, 2, 30))
       end
     end
   end
 
   describe '.datetime' do
     it 'formats a Time as YYYY-MM-DD HH:MM' do
-      result = described_class.datetime(Time.new(2023, 3, 2, 6, 40))
+      result = described_class.datetime(Time.utc(2023, 3, 2, 6, 40))
 
       expect(result).to eq('2023-03-02 06:40')
     end
@@ -67,7 +97,7 @@ RSpec.describe TravelManager::TimeUtils do
 
   describe '.date' do
     it 'formats a Time as YYYY-MM-DD' do
-      result = described_class.date(Time.new(2023, 3, 2, 6, 40))
+      result = described_class.date(Time.utc(2023, 3, 2, 6, 40))
 
       expect(result).to eq('2023-03-02')
     end
@@ -75,7 +105,7 @@ RSpec.describe TravelManager::TimeUtils do
 
   describe '.time' do
     it 'formats a Time as HH:MM' do
-      result = described_class.time(Time.new(2023, 3, 2, 6, 40))
+      result = described_class.time(Time.utc(2023, 3, 2, 6, 40))
 
       expect(result).to eq('06:40')
     end
@@ -84,8 +114,8 @@ RSpec.describe TravelManager::TimeUtils do
   describe '.hours_difference' do
     context 'when next day but same time' do
       it 'returns 24' do
-        a = Time.new(2026, 3, 2, 9, 0)
-        b = Time.new(2026, 3, 3, 9, 0)
+        a = Time.utc(2026, 3, 2, 9, 0)
+        b = Time.utc(2026, 3, 3, 9, 0)
 
         result = described_class.hours_difference(b, a)
 
@@ -95,8 +125,8 @@ RSpec.describe TravelManager::TimeUtils do
 
     context 'when same days but different time' do
       it 'returns the exact hour difference' do
-        a = Time.new(2026, 3, 2, 6, 0)
-        b = Time.new(2026, 3, 2, 15, 0)
+        a = Time.utc(2026, 3, 2, 6, 0)
+        b = Time.utc(2026, 3, 2, 15, 0)
 
         result = described_class.hours_difference(b, a)
 
@@ -106,8 +136,8 @@ RSpec.describe TravelManager::TimeUtils do
 
     context 'when the first date is earlier than the second' do
       it 'returns negative' do
-        a = Time.new(2023, 2, 15, 0, 0)
-        b = Time.new(2023, 2, 16, 12, 10)
+        a = Time.utc(2023, 2, 15, 0, 0)
+        b = Time.utc(2023, 2, 16, 12, 10)
 
         result = described_class.hours_difference(a, b)
 
@@ -117,8 +147,8 @@ RSpec.describe TravelManager::TimeUtils do
 
     context 'when same days but different month' do
       it 'returns value bigger than 24' do
-        a = Time.new(2026, 3, 2, 9, 0)
-        b = Time.new(2026, 4, 2, 9, 0)
+        a = Time.utc(2026, 3, 2, 9, 0)
+        b = Time.utc(2026, 4, 2, 9, 0)
 
         result = described_class.hours_difference(b, a)
 
@@ -128,8 +158,8 @@ RSpec.describe TravelManager::TimeUtils do
 
     context 'when the dates are the same' do
       it 'returns 0' do
-        a = Time.new(2026, 3, 2, 9, 30)
-        b = Time.new(2026, 3, 2, 9, 30)
+        a = Time.utc(2026, 3, 2, 9, 30)
+        b = Time.utc(2026, 3, 2, 9, 30)
 
         result = described_class.hours_difference(a, b)
 
