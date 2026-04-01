@@ -366,12 +366,33 @@ RSpec.describe TravelManager::Parser do
 
           RESERVATION
           SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
-          TEXT
+        TEXT
 
         expected = [
           TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
-                                    datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
-                                    datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10'))
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10'))
+        ]
+
+        result = described_class.parse(input)
+        expect(result).to match_segments(expected)
+      end
+    end
+
+    context 'when destination and arrival are the same' do
+      it 'ignores the segment and returns the valid one' do
+        input = <<~TEXT
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> SVQ 22:10
+
+          RESERVATION
+          SEGMENT: Flight SVQ 2023-01-05 20:40 -> BCN 22:10
+        TEXT
+
+        expected = [
+          TravelManager::Segment.new(type: 'Flight', from: 'SVQ', to: 'BCN',
+                                     datetime_from: TravelManager::TimeUtils.to_time('2023-01-05', '20:40'),
+                                     datetime_to: TravelManager::TimeUtils.to_time('2023-01-05', '22:10'))
         ]
 
         result = described_class.parse(input)
