@@ -12,6 +12,13 @@ module TravelManager
       hotel_segment_pattern: /^SEGMENT:\s+(\w+)\s+(\w+)\s+(\d{4}-\d{2}-\d{2})\s+->\s+(\d{4}-\d{2}-\d{2})$/
     }.freeze
 
+    ERROR_MESSAGES = {
+      segment_not_found: 'SEGMENT pattern not found, ignoring line: %<line>s.',
+      unknown_type: "Parsed type '%<type>s' is not a known Segment type. Ignoring line '%<line>s'.",
+      invalid_line_format: "Invalid '%<type>s' format, ignoring line. Expected %<expected>s, got %<line>s.",
+      invalid_iata: "Parsed location '%<iata>s' is not a valid IATA code: it should be three-letter uppercase."
+    }.freeze
+
     class << self
       # Creates an array of Segments from the reservations text of the user.
       #
@@ -43,7 +50,7 @@ module TravelManager
         matcher = line.match(pattern)
 
         if matcher.nil?
-          TravelManager.logger&.warn "SEGMENT pattern not found, ignoring line: #{line}."
+          TravelManager.logger&.warn(format(ERROR_MESSAGES[:segment_not_found], line:))
           return
         end
 
@@ -57,8 +64,7 @@ module TravelManager
       def supported_type?(type, method_name, line)
         return true if respond_to?(method_name, true)
 
-        TravelManager.logger&.warn "Parsed type '#{type}' is not a known Segment type and " \
-                                   "cannot be parsed. Ignoring line '#{line}'."
+        TravelManager.logger&.warn(format(ERROR_MESSAGES[:unknown_type], type:, line:))
         false
       end
 
@@ -87,9 +93,11 @@ module TravelManager
         matcher = trip_line.match(pattern)
 
         if matcher.nil?
-          TravelManager.logger&.warn 'Invalid Flight/Train format, ignoring line. Expected ' \
-                                     "'SEGMENT: Type FROM DEPARTURE_DATE DEPARTURE_TIME -> TO ARRIVAL_TIME'" \
-                                     ", got #{trip_line}."
+          TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_line_format],
+                                            type: 'Flight/Train',
+                                            expected: 'SEGMENT: Type FROM DEPARTURE_DATE DEPARTURE_TIME ' \
+                                                      '-> TO ARRIVAL_TIME',
+                                            line: trip_line))
           return
         end
 
@@ -112,8 +120,10 @@ module TravelManager
         matcher = hotel_line.match(pattern)
 
         if matcher.nil?
-          TravelManager.logger&.warn 'Invalid Hotel format, ignoring line.' \
-                                     "Expected 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO', got #{hotel_line}."
+          TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_line_format],
+                                            type: 'Hotel',
+                                            expected: 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO',
+                                            line: hotel_line))
           return
         end
 
@@ -134,7 +144,7 @@ module TravelManager
       def valid_iata?(iata)
         return true unless iata.length != 3 || iata != iata.upcase
 
-        TravelManager.logger&.warn "Parsed location '#{iata}' is not a valid IATA code: it should be three-letter uppercase."
+        TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_iata], iata:))
         false
       end
     end
