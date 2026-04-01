@@ -47,13 +47,12 @@ module TravelManager
       # @param line [String] SEGMENT: text line.
       # @return [Segment, nil] segment of the right type, or nil if the segment type is not supported.
       def segment(line)
-        pattern = TEXT_PATTERNS[:generic_segment_pattern]
-        matcher = line.match(pattern)
-
-        if matcher.nil?
-          TravelManager.logger&.warn(format(ERROR_MESSAGES[:segment_not_found], line:))
-          return
-        end
+        matcher = match_pattern(
+          line,
+          :generic_segment_pattern,
+          :segment_not_found
+        )
+        return unless matcher
 
         type = matcher.captures.first
         method_name = "#{type.downcase}_segment"
@@ -90,17 +89,13 @@ module TravelManager
       # @param trip_line [String] text line of type Flight/Train.
       # @return [Segment, nil] new Segment, or nil if the parsed from and to are not a valid IATA code.
       def trip_segment(trip_line)
-        pattern = TEXT_PATTERNS[:trip_segment_pattern]
-        matcher = trip_line.match(pattern)
-
-        if matcher.nil?
-          TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_line_format],
-                                            type: 'Flight/Train',
-                                            expected: 'SEGMENT: Type FROM DEPARTURE_DATE DEPARTURE_TIME ' \
-                                                      '-> TO ARRIVAL_TIME',
-                                            line: trip_line))
-          return
-        end
+        matcher = match_pattern(
+          trip_line,
+          :trip_segment_pattern,
+          :invalid_line_format,
+          { type: 'Flight/Train', expected: 'SEGMENT: Type FROM DATE TIME -> TO TIME' }
+        )
+        return unless matcher
 
         type, from, date_from, time_from, to, time_to = matcher.captures
         return unless valid_iata?(from) && valid_iata?(to)
@@ -119,16 +114,14 @@ module TravelManager
       # @param hotel_line [String] text line of type Hotel.
       # @return [Segment, nil] new Segment, or nil if the parsed from is not a valid IATA code.
       def hotel_segment(hotel_line)
-        pattern = TEXT_PATTERNS[:hotel_segment_pattern]
-        matcher = hotel_line.match(pattern)
+        matcher = match_pattern(
+          hotel_line,
+          :hotel_segment_pattern,
+          :invalid_line_format,
+          { expected: 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO', type: 'Hotel' }
+        )
 
-        if matcher.nil?
-          TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_line_format],
-                                            type: 'Hotel',
-                                            expected: 'SEGMENT: Hotel FROM DEPARTURE_DATE -> TO',
-                                            line: hotel_line))
-          return
-        end
+        return unless matcher
 
         type, from, date_from, date_to = matcher.captures
         return unless valid_iata?(from)
@@ -140,6 +133,18 @@ module TravelManager
           datetime_from: TimeUtils.to_time(date_from, nil),
           datetime_to: TimeUtils.to_time(date_to, nil)
         )
+      end
+
+      def match_pattern(line, pattern_key, error_key, error_variables = {})
+        pattern = TEXT_PATTERNS[pattern_key]
+        matcher = line.match(pattern)
+        return matcher if matcher
+
+        TravelManager.logger&.warn(
+          format(ERROR_MESSAGES[error_key], error_variables.merge(line:))
+        )
+
+        nil
       end
 
       # Checks wether the input location string is a correct IATA code.
