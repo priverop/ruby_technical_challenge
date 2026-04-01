@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative 'segment'
 require_relative 'time_utils'
 
@@ -104,8 +105,10 @@ module TravelManager
         type, from, date_from, time_from, to, time_to = matcher.captures
         return unless valid_iata?(from) && valid_iata?(to)
 
-        Segment.new(
-          type: type, from: from, to: to,
+        build_segment(
+          type: type,
+          from: from,
+          to: to,
           datetime_from: TimeUtils.to_time(date_from, time_from),
           datetime_to: TimeUtils.arrival_time(date_from, time_from, time_to)
         )
@@ -130,8 +133,10 @@ module TravelManager
         type, from, date_from, date_to = matcher.captures
         return unless valid_iata?(from)
 
-        Segment.new(
-          type: type, from: from, to: from,
+        build_segment(
+          type: type,
+          from: from,
+          to: from,
           datetime_from: TimeUtils.to_time(date_from, nil),
           datetime_to: TimeUtils.to_time(date_to, nil)
         )
@@ -146,6 +151,14 @@ module TravelManager
 
         TravelManager.logger&.warn(format(ERROR_MESSAGES[:invalid_iata], iata:))
         false
+      end
+
+      def build_segment(type:, from:, to:, datetime_from:, datetime_to:)
+        Segment.new(
+          type: type, from: from, to: to,
+          datetime_from: datetime_from,
+          datetime_to: datetime_to
+        )
       end
     end
   end
